@@ -1,11 +1,72 @@
 export default function AboutPage() {
   return (
-    <main className="p-6">
-      <h1 className="text-3xl font-bold mb-4">About Me</h1>
-      <p>
-        I’m a developer passionate about building great products and solving
-        real problems.
-      </p>
+    <main className="max-w-3xl mx-auto px-4 py-10">
+      <h1 className="text-4xl font-bold mb-6 text-center">
+        👋 Hey, I'm [Your Name]
+      </h1>
+
+      <section className="mb-8 space-y-3 text-lg leading-relaxed">
+        <p>
+          I'm a <span className="font-semibold">full-stack developer</span> who
+          loves building fast, friendly, and future-proof web experiences. I
+          enjoy solving real-world problems with clean code and great design.
+        </p>
+        <p>
+          Currently, I'm working with technologies like{" "}
+          <span className="text-blue-500">Next.js</span>,{" "}
+          <span className="text-yellow-500">TypeScript</span>, and{" "}
+          <span className="text-green-600">Tailwind CSS</span>. I also love
+          tinkering with APIs, animations, and the occasional command-line tool.
+        </p>
+        <p>
+          Outside of the code editor, you’ll find me hunting for good coffee ☕,
+          overthinking tweets 🧠, and obsessing over dark mode designs 🌙.
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">🛠 What I Work With</h2>
+        <ul className="list-disc list-inside grid grid-cols-2 md:grid-cols-3 gap-2 text-gray-800 dark:text-gray-200">
+          <li>Next.js</li>
+          <li>React</li>
+          <li>TypeScript</li>
+          <li>Tailwind CSS</li>
+          <li>Node.js</li>
+          <li>PostgreSQL</li>
+        </ul>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">📚 My Journey</h2>
+        <p className="text-lg leading-relaxed">
+          I started as a curious teen building websites on free hosting sites
+          (remember those? 😅). After diving deeper into code, I turned that
+          hobby into a career. Today, I focus on building clean, scalable apps
+          and learning something new every week.
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">🎉 Fun Facts</h2>
+        <ul className="list-disc list-inside text-lg space-y-2">
+          <li>I prefer tabs over spaces (fight me 😎)</li>
+          <li>Dark mode is my default aesthetic</li>
+          <li>I once broke production and fixed it before anyone noticed 🙈</li>
+          <li>I secretly enjoy writing documentation</li>
+        </ul>
+      </section>
+
+      <section className="text-center mt-12">
+        <p className="text-xl">
+          🚀 Want to see what I’ve built? <br />
+          <a
+            href="/projects"
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
+            Check out my projects →
+          </a>
+        </p>
+      </section>
     </main>
   );
 }
