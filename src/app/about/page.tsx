@@ -2,25 +2,26 @@ export default function AboutPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
       <h1 className="text-4xl font-bold mb-6 text-center">
-        👋 Hey, I'm [Your Name]
+        👋 Hey, I&apos;m [Your Name]
       </h1>
 
       <section className="mb-8 space-y-3 text-lg leading-relaxed">
         <p>
-          I'm a <span className="font-semibold">full-stack developer</span> who
-          loves building fast, friendly, and future-proof web experiences. I
+          I&apos;m a <span className="font-semibold">full-stack developer</span>{" "}
+          who loves building fast, friendly, and future-proof web experiences. I
           enjoy solving real-world problems with clean code and great design.
         </p>
         <p>
-          Currently, I'm working with technologies like{" "}
+          Currently, I&apos;m working with technologies like{" "}
           <span className="text-blue-500">Next.js</span>,{" "}
           <span className="text-yellow-500">TypeScript</span>, and{" "}
           <span className="text-green-600">Tailwind CSS</span>. I also love
           tinkering with APIs, animations, and the occasional command-line tool.
         </p>
         <p>
-          Outside of the code editor, you’ll find me hunting for good coffee ☕,
-          overthinking tweets 🧠, and obsessing over dark mode designs 🌙.
+          Outside of the code editor, you&apos;ll find me hunting for good
+          coffee ☕, overthinking tweets 🧠, and obsessing over dark mode
+          designs 🌙.
         </p>
       </section>
 
@@ -58,7 +59,7 @@ export default function AboutPage() {
 
       <section className="text-center mt-12">
         <p className="text-xl">
-          🚀 Want to see what I’ve built? <br />
+          🚀 Want to see what I&apos;ve built? <br />
           <a
             href="/projects"
             className="text-blue-600 hover:underline dark:text-blue-400"
