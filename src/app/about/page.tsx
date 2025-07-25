@@ -2,7 +2,7 @@ export default function AboutPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
       <h1 className="text-4xl font-bold mb-6 text-center">
-        👋 Hey, I&apos;m [Your Name]
+        👋 Hey, I&apos;m Aman Kumar
       </h1>
 
       <section className="mb-8 space-y-3 text-lg leading-relaxed">
@@ -24,16 +24,33 @@ export default function AboutPage() {
           designs 🌙.
         </p>
       </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-3">🛠 What I Work With</h2>
-        <ul className="list-disc list-inside grid grid-cols-2 md:grid-cols-3 gap-2 text-gray-800 dark:text-gray-200">
-          <li>Next.js</li>
-          <li>React</li>
-          <li>TypeScript</li>
-          <li>Tailwind CSS</li>
-          <li>Node.js</li>
-          <li>PostgreSQL</li>
+      <section className="w-full max-w-2xl mb-10">
+        <h3 className="text-xl font-semibold mb-3">Skills</h3>
+        <ul className="flex flex-wrap gap-3 text-sm">
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            Python
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            TensorFlow
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            PyTorch
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            Scikit-learn
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            NLP
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            Computer Vision
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            Data Analysis
+          </li>
+          <li className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded">
+            MLOps
+          </li>
         </ul>
       </section>
 

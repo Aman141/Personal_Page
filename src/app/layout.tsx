@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +32,14 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-grow px-6">{children}</main>
-            <footer className="p-4 text-center text-sm opacity-50">
-              © {new Date().getFullYear()} Aman Kumar
-            </footer>
+            <main className="flex-grow px-6 sm:px-12">{children}</main>
+            <Footer
+              email="aman.kumar@gmail.com"
+              githubUrl="https://github.com/aman-kumar"
+              linkedinUrl="https://www.linkedin.com/in/aman-kumar-b0b0b0b0b0/"
+              twitterUrl="https://twitter.com/aman-kumar"
+              instagramUrl="https://instagram.com/aman-kumar"
+            />
           </div>
         </ThemeProvider>
       </body>
