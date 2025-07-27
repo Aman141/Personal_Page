@@ -12,15 +12,15 @@ export default function Intro() {
         {/* Emoji Row */}
         <div className="flex gap-3 mb-6 text-2xl">
           <span>💻</span>
-          <span>🎸</span>
-          <span>☕</span>
-          <span>🧠</span>
-          <span>❤️</span>
+          <span>🎥</span>
+          <span>🌍</span>
+          <span>🎧</span>
+          <span>🏆</span>
         </div>
 
         {/* Professional Info */}
-        <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8">
-          25 | Data Science | Software Engineering | Artificial Intelligence
+        <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-4">
+          29 | AI Engineer | Software Developer | Traveler | Photographer
         </p>
 
         {/* Contact Button */}

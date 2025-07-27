@@ -34,11 +34,11 @@ export default function RootLayout({
             <Header />
             <main className="flex-grow px-6 sm:px-12">{children}</main>
             <Footer
-              email="aman.kumar@gmail.com"
-              githubUrl="https://github.com/aman-kumar"
-              linkedinUrl="https://www.linkedin.com/in/aman-kumar-b0b0b0b0b0/"
-              twitterUrl="https://twitter.com/aman-kumar"
-              instagramUrl="https://instagram.com/aman-kumar"
+              email="aman141kumar.ak@gmail.com"
+              githubUrl="https://github.com/Aman141"
+              linkedinUrl="https://www.linkedin.com/in/aman-aks-007/"
+              twitterUrl="https://x.com/twt2aman"
+              instagramUrl="https://www.instagram.com/happy._.habitat/"
             />
           </div>
         </ThemeProvider>
