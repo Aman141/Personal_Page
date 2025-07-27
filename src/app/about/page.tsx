@@ -2,7 +2,7 @@ export default function AboutPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
       <h1 className="text-4xl font-bold mb-6 text-center">
-        👋 Hey, I'm Aman Kumar
+        👋 Hey, I am Aman Kumar
       </h1>
 
       <section className="mb-8 space-y-3 text-lg leading-relaxed">

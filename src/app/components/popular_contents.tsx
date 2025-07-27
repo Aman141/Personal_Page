@@ -1,7 +1,13 @@
 "use client";
 import { useState, useRef } from "react";
 
-function CardSlider({ items }: { items: any[] }) {
+interface CardItem {
+  title: string;
+  description: string;
+  tech: string;
+}
+
+function CardSlider({ items }: { items: CardItem[] }) {
   const [startIdx, setStartIdx] = useState(0);
   const visibleCount = 3;
   const total = items.length;
@@ -119,7 +125,7 @@ function CardSlider({ items }: { items: any[] }) {
 }
 
 export default function PopularContents() {
-  const projects = [
+  const projects: CardItem[] = [
     {
       title: "Image Classifier API",
       description:
@@ -152,7 +158,7 @@ export default function PopularContents() {
     },
   ];
 
-  const blogs = [
+  const blogs: CardItem[] = [
     {
       title: "Getting Started with Next.js",
       description: "A beginner's guide to building fast web apps with Next.js.",
