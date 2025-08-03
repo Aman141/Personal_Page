@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
             />
           </div>
         </ThemeProvider>
+        <AnalyticsWrapper />
       </body>
     </html>
   );
