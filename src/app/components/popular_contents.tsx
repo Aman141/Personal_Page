@@ -2,123 +2,16 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-  Code2,
-  FileText,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useMediumPosts } from "../../hooks/useMediumPosts";
 import { featuredProjects, projectLink } from "@/data/projects";
+import ContentCard, { type ContentCardItem } from "@/components/ContentCard";
 
 // Three cards visible on desktop, two on tablet, one on mobile. Widths are
 // percentages of the track rather than fixed pixels, so the last visible card
 // can never be clipped by a container narrower than the sum of the cards.
 const SLIDE_WIDTH =
   "w-full sm:w-[calc((100%_-_1.25rem)/2)] lg:w-[calc((100%_-_2.5rem)/3)]";
-
-interface CardItem {
-  title: string;
-  description: string;
-  tags: string[];
-  link: string;
-  meta?: string;
-}
-
-const CARD_CLASSES =
-  "group flex h-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-purple-700";
-
-function ContentCard({
-  item,
-  variant,
-}: {
-  item: CardItem;
-  variant: "project" | "post";
-}) {
-  const isExternal = item.link.startsWith("http");
-  const Icon = variant === "project" ? Code2 : FileText;
-  const visibleTags = item.tags.slice(0, 3);
-  const hiddenTagCount = item.tags.length - visibleTags.length;
-
-  const body = (
-    <>
-      <div className="flex items-start justify-between gap-3">
-        <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-white ${
-            variant === "project"
-              ? "from-purple-500 to-indigo-500"
-              : "from-sky-500 to-emerald-500"
-          }`}
-        >
-          <Icon className="h-5 w-5" />
-        </span>
-        {item.meta && (
-          <span className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-            {item.meta}
-          </span>
-        )}
-      </div>
-
-      {/* line-clamp rather than truncate: these titles wrap to two lines
-          instead of being cut off mid-word with an ellipsis. */}
-      <h3 className="mt-4 line-clamp-2 text-lg font-semibold leading-snug transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-400">
-        {item.title}
-      </h3>
-      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-        {item.description}
-      </p>
-
-      {visibleTags.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {visibleTags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-            >
-              {tag}
-            </span>
-          ))}
-          {hiddenTagCount > 0 && (
-            <span className="rounded-md px-2 py-0.5 text-xs text-gray-500 dark:text-gray-400">
-              +{hiddenTagCount}
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* mt-auto pins the footer to the bottom so every card in a row
-          lines up regardless of description length. */}
-      <div className="mt-auto border-t border-gray-100 pt-4 dark:border-gray-800">
-        <span className="inline-flex items-center gap-1 text-sm font-medium text-purple-600 dark:text-purple-400">
-          {variant === "project" ? "View project" : "Read post"}
-          {isExternal ? (
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          ) : (
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          )}
-        </span>
-      </div>
-    </>
-  );
-
-  // The whole card is the link target, so there is no nested anchor inside it.
-  return isExternal ? (
-    <a
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={CARD_CLASSES}
-    >
-      {body}
-    </a>
-  ) : (
-    <Link href={item.link} className={CARD_CLASSES}>
-      {body}
-    </Link>
-  );
-}
 
 // Scroll position drives the arrows, rather than an index the component owns,
 // so trackpad/touch swipes and arrow clicks can never disagree about where the
@@ -268,13 +161,6 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 }
 
 export default function PopularContents() {
-  const projects: CardItem[] = featuredProjects.map((project) => ({
-    title: project.title,
-    description: project.description,
-    tags: project.tags,
-    link: projectLink(project),
-  }));
-
   const {
     posts: mediumPosts,
     loading: blogsLoading,
@@ -283,15 +169,17 @@ export default function PopularContents() {
 
   // Six rather than three: with three cards visible there would be nothing to
   // slide, so the slider only earns its arrows once the feed has more posts.
-  const blogs: CardItem[] = mediumPosts.slice(0, 6).map((post) => ({
-    title: post.title,
-    description: post.summary,
-    tags: post.tags,
-    link: post.link,
-    meta: post.date,
-  }));
+  const blogs: (ContentCardItem & { link: string })[] = mediumPosts
+    .slice(0, 6)
+    .map((post) => ({
+      title: post.title,
+      description: post.summary,
+      tags: post.tags,
+      link: post.link,
+      meta: post.date,
+    }));
 
-  const projectSlider = useSliderControls(projects.length);
+  const projectSlider = useSliderControls(featuredProjects.length);
   const blogSlider = useSliderControls(blogs.length);
 
   return (
@@ -310,12 +198,21 @@ export default function PopularContents() {
         }
       >
         <SliderTrack trackRef={projectSlider.trackRef}>
-          {projects.map((project) => (
+          {featuredProjects.map((project) => (
             <div
-              key={project.title}
+              key={project.slug}
               className={`${SLIDE_WIDTH} shrink-0 snap-start`}
             >
-              <ContentCard item={project} variant="project" />
+              <ContentCard
+                item={project}
+                variant="project"
+                href={projectLink(project)}
+                secondary={
+                  project.demoUrl
+                    ? { href: project.repoUrl, label: "Source" }
+                    : undefined
+                }
+              />
             </div>
           ))}
         </SliderTrack>
@@ -351,8 +248,11 @@ export default function PopularContents() {
         {!blogsLoading && !blogsError && blogs.length > 0 && (
           <SliderTrack trackRef={blogSlider.trackRef}>
             {blogs.map((post) => (
-              <div key={post.link} className={`${SLIDE_WIDTH} shrink-0 snap-start`}>
-                <ContentCard item={post} variant="post" />
+              <div
+                key={post.link}
+                className={`${SLIDE_WIDTH} shrink-0 snap-start`}
+              >
+                <ContentCard item={post} variant="post" href={post.link} />
               </div>
             ))}
           </SliderTrack>

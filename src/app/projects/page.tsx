@@ -1,25 +1,55 @@
+import type { Metadata } from "next";
+import ContentCard from "@/components/ContentCard";
+import { projects, projectLink } from "@/data/projects";
 
-// This page is under construction.
+export const metadata: Metadata = {
+  title: "Projects",
+  description:
+    "Machine learning, signal processing, and web projects by Aman Kumar.",
+};
+
 export default function ProjectsPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-20">
-      <div className="flex flex-col items-center">
-        <span className="text-6xl mb-4 animate-bounce">🚧</span>
-        <h1 className="text-4xl font-bold mb-2 text-center">
-          Projects Coming Soon
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 text-center max-w-xl mb-6">
-          This page is under construction. Check back soon for my projects!
+    <div className="mx-auto max-w-5xl px-4 py-10">
+      <header className="mb-10">
+        <h1 className="text-4xl font-bold">Projects</h1>
+        <p className="mt-3 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+          A mix of machine learning and signal-processing work alongside a few
+          things I have built for the web. Each card links to a live demo where
+          one exists, otherwise straight to the source.
         </p>
-        <div className="flex gap-2">
-          <span className="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-3 py-1 rounded-full text-sm font-medium">
-            Stay tuned!
-          </span>
-          <span className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium">
-            🚀
-          </span>
-        </div>
+      </header>
+
+      {/* Two columns rather than the home page's three: this page has the width
+          to give each description room instead of clamping it. */}
+      <div className="grid gap-6 sm:grid-cols-2">
+        {projects.map((project) => (
+          <ContentCard
+            key={project.slug}
+            item={project}
+            variant="project"
+            href={projectLink(project)}
+            secondary={
+              project.demoUrl
+                ? { href: project.repoUrl, label: "Source" }
+                : undefined
+            }
+          />
+        ))}
       </div>
+
+      <p className="mt-10 text-sm text-gray-500 dark:text-gray-400">
+        More on{" "}
+        <a
+          href="https://github.com/Aman141"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-purple-600 hover:underline dark:text-purple-400"
+        >
+          GitHub
+        </a>
+        .
+      </p>
     </div>
   );
 }
