@@ -11,6 +11,7 @@ import {
   FileText,
 } from "lucide-react";
 import { useMediumPosts } from "../../hooks/useMediumPosts";
+import { featuredProjects, projectLink } from "@/data/projects";
 
 // Three cards visible on desktop, two on tablet, one on mobile. Widths are
 // percentages of the track rather than fixed pixels, so the last visible card
@@ -267,43 +268,12 @@ function EmptyState({ children }: { children: React.ReactNode }) {
 }
 
 export default function PopularContents() {
-  const projects: CardItem[] = [
-    {
-      title: "Image Classifier API",
-      description:
-        "A RESTful API for image classification using deep learning, deployed with Docker and FastAPI.",
-      tags: ["Python", "TensorFlow", "FastAPI", "Docker"],
-      link: "/projects",
-    },
-    {
-      title: "NLP Chatbot",
-      description:
-        "Conversational AI chatbot for customer support, leveraging transformer models and custom intent recognition.",
-      tags: ["Python", "PyTorch", "HuggingFace", "NLP"],
-      link: "/projects",
-    },
-    {
-      title: "ML Pipeline Automation",
-      description:
-        "Automated end-to-end ML pipeline for data preprocessing, training, and deployment using CI/CD tools.",
-      tags: ["Python", "Scikit-learn", "MLflow", "GitHub Actions"],
-      link: "/projects",
-    },
-    {
-      title: "Portfolio Website",
-      description:
-        "Personal portfolio built with Next.js, Tailwind CSS, and deployed on Vercel.",
-      tags: ["Next.js", "Tailwind CSS", "Vercel"],
-      link: "/projects",
-    },
-    {
-      title: "Data Visualization Dashboard",
-      description:
-        "Interactive dashboard for visualizing large datasets with D3.js and React.",
-      tags: ["React", "D3.js", "TypeScript"],
-      link: "/projects",
-    },
-  ];
+  const projects: CardItem[] = featuredProjects.map((project) => ({
+    title: project.title,
+    description: project.description,
+    tags: project.tags,
+    link: projectLink(project),
+  }));
 
   const {
     posts: mediumPosts,
