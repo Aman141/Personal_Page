@@ -48,10 +48,16 @@ There is **no `tailwind.config.ts`** — Tailwind 4 no longer auto-detects JS co
 The theme is resolved in three steps, and the order matters:
 
 1. A blocking inline `<script>` at the top of `<body>` in `layout.tsx` reads `localStorage.theme` (falling back to `prefers-color-scheme`) and applies `.dark` **before first paint**. Since every `dark:` utility now depends on that class, deferring this to an effect would flash a light page at dark-mode visitors. `<html>` carries `suppressHydrationWarning` because the script mutates its className pre-hydration.
-2. `ThemeContext` reads the resolved value back off the DOM on mount rather than re-deriving it, so the two can't disagree.
-3. `DarkModeToggle` renders both labels and lets CSS (`dark:hidden` / `hidden dark:inline`) choose, so the button is correct on first paint without waiting for state to sync.
+2. `DarkModeToggle` renders both labels and lets CSS (`dark:hidden` / `hidden dark:inline`) choose, so the button is correct on first paint without waiting for any state to sync.
+3. `ThemeContext` therefore holds **no state at all** — it exposes only `toggleTheme`, which reads the current class off `<html>` at click time. The `dark` class is the single source of truth. It previously mirrored that class into `useState` via an effect; nothing ever read the value, and `react-hooks/set-state-in-effect` rightly flags the pattern. Don't reintroduce it unless something genuinely needs to render off the theme value — and if it does, reach for `useSyncExternalStore` rather than an effect.
 
 If you add a system-preference CSS media query here, make sure it can't override `html.dark` — step 1 already handles the system default, so a media query is redundant and will fight the toggle.
+
+### Linting
+
+`eslint.config.mjs` spreads `eslint-config-next`'s flat configs in **directly**. Do not route them through `@eslint/eslintrc`'s `FlatCompat` (which is what `next lint` used to do): since v16 the package ships native flat config, and the compat layer throws a circular-reference error while validating the schema. `@eslint/eslintrc` is no longer a dependency.
+
+The `ignores` block is load-bearing — `next lint` used to supply it implicitly, and without it `eslint .` walks `.next/` and reports thousands of errors from generated code. Keep `eslint-config-next` on the same version as `next`.
 
 ### Data: Medium posts
 

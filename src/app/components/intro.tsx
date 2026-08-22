@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { site } from "@/data/site";
 
 export default function Intro() {
   return (
@@ -9,8 +10,9 @@ export default function Intro() {
           Hi, I&apos;m Aman
         </h1>
 
-        {/* Emoji Row */}
-        <div className="flex gap-3 mb-6 text-2xl">
+        {/* Purely decorative — aria-hidden so screen readers don't announce
+            five emoji names before reaching the actual tagline. */}
+        <div className="flex gap-3 mb-6 text-2xl" aria-hidden="true">
           <span>💻</span>
           <span>🎥</span>
           <span>🌍</span>
@@ -18,9 +20,8 @@ export default function Intro() {
           <span>🏆</span>
         </div>
 
-        {/* Professional Info */}
         <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-4">
-          29 | AI Engineer | Software Developer | Traveler | Photographer
+          {site.tagline.join(" | ")}
         </p>
 
         {/* Contact Button */}

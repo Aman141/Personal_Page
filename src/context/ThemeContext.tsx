@@ -1,42 +1,35 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 
-type Theme = "light" | "dark";
+// No React state here on purpose. The `dark` class on <html> — applied before
+// first paint by the inline script in layout.tsx — is the single source of
+// truth, and DarkModeToggle picks its label with CSS (`dark:hidden` /
+// `hidden dark:inline`) rather than reading a value from this context.
+//
+// An earlier version mirrored the class into useState and synced it in an
+// effect. That copy was never read by anything, cost a render after hydration,
+// and created a second source of truth that could disagree with the DOM.
 
-const ThemeContext = createContext<{
-  theme: Theme;
-  toggleTheme: () => void;
-}>({
-  theme: "light",
+const ThemeContext = createContext<{ toggleTheme: () => void }>({
   toggleTheme: () => {},
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>("light");
-
-  // The inline script in layout.tsx already resolved the theme and applied the
-  // class before first paint, so read back from the DOM rather than re-deriving
-  // it here (which would let the two disagree).
-  useEffect(() => {
-    setTheme(
-      document.documentElement.classList.contains("dark") ? "dark" : "light"
-    );
-  }, []);
-
   const toggleTheme = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
+    const root = document.documentElement;
+    const next = root.classList.contains("dark") ? "light" : "dark";
+    root.classList.toggle("dark", next === "dark");
     try {
       localStorage.setItem("theme", next);
     } catch {
-      // Private browsing / storage disabled — the class still applies for this session.
+      // Private browsing or storage disabled — the class still applies for
+      // this session, it just won't persist.
     }
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

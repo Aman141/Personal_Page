@@ -1,14 +1,10 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+import typescript from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
+// eslint-config-next 16 ships native flat config, so these are spread in
+// directly. Loading them through @eslint/eslintrc's FlatCompat — which is what
+// `next lint` used to do for us — now throws a circular-reference error while
+// validating the schema.
 const eslintConfig = [
   // `next lint` used to supply these implicitly. Running the ESLint CLI
   // directly (see the "lint" script) means declaring them here, or ESLint
@@ -22,7 +18,8 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...coreWebVitals,
+  ...typescript,
 ];
 
 export default eslintConfig;

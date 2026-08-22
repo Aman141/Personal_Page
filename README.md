@@ -100,7 +100,8 @@ my-portfolio/
 
 | To change | Edit |
 |---|---|
-| Name, role, description, social links | `src/data/site.ts` — feeds metadata, the OG image, and the footer |
+| Name, role, tagline, social links | `src/data/site.ts` — feeds metadata, the OG image, the home tagline, and the footer |
+| Availability pill on `/contact` | `availability` in `src/data/site.ts` — `null` hides it |
 | Projects (home slider and `/projects`) | `src/data/projects.ts` — single source for both |
 | Blog source | `MEDIUM_USERNAME` in `src/lib/medium.ts` |
 | Bio, experience, education | `src/app/about/page.tsx` |

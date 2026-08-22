@@ -20,6 +20,18 @@ export const site = {
   role: "AI Engineer",
   location: "Berlin",
   timezone: "CET",
+  /**
+   * Home-page tagline. Deliberately no age: a hardcoded number silently goes
+   * stale every birthday, and it isn't a professional credential. If you want
+   * it back, store a birth year here and compute it rather than writing a
+   * literal.
+   */
+  tagline: [
+    "AI Engineer",
+    "Software Developer",
+    "Traveler",
+    "Photographer",
+  ] as string[],
   description:
     "AI Engineer in Berlin working on machine learning for underwater acoustic detection and tracking, with projects in signal processing and Bayesian modelling.",
   url: resolveSiteUrl(),

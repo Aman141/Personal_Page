@@ -14,7 +14,13 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project) return {};
+
+  // This route's generateMetadata wins over not-found.tsx's when notFound() is
+  // called below, so returning {} here would leave a 404 wearing the site's
+  // default title and let it be indexed. Mirror the 404 metadata instead.
+  if (!project) {
+    return { title: "Page not found", robots: { index: false, follow: true } };
+  }
 
   return {
     title: project.title,
