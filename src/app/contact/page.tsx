@@ -1,3 +1,14 @@
+import type { Metadata } from "next";
+
+const description = "Get in touch with Aman Kumar.";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description,
+  alternates: { canonical: "/contact" },
+  openGraph: { title: "Contact", description, url: "/contact" },
+};
+
 export default function ContactPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-20">

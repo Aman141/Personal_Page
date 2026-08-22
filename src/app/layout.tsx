@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
+import { site, siteTitle } from "@/data/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +17,39 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "My Portfolio",
-  description: "Built with Next.js",
+export const metadata: Metadata = {
+  // Required for Open Graph and canonical URLs to resolve to absolute paths.
+  metadataBase: new URL(site.url),
+  // `template` gives every child page "<Page> · Aman Kumar" for free.
+  title: { default: siteTitle, template: `%s · ${site.name}` },
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.social.github }],
+  creator: site.name,
+  keywords: [
+    "Aman Kumar",
+    "AI Engineer",
+    "Machine Learning",
+    "Signal Processing",
+    "Underwater Acoustics",
+    "Berlin",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: site.url,
+    siteName: site.name,
+    title: siteTitle,
+    description: site.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: site.social.twitterHandle,
+    title: siteTitle,
+    description: site.description,
+  },
+  robots: { index: true, follow: true },
 };
 
 // Runs before the first paint so a dark-mode visitor never sees a white flash.
@@ -51,11 +83,11 @@ export default function RootLayout({
             <Header />
             <main className="flex-grow px-6 sm:px-12">{children}</main>
             <Footer
-              email="aman141kumar.ak@gmail.com"
-              githubUrl="https://github.com/Aman141"
-              linkedinUrl="https://www.linkedin.com/in/aman-aks-007/"
-              twitterUrl="https://x.com/twt2aman"
-              instagramUrl="https://www.instagram.com/happy._.habitat/"
+              email={site.email}
+              githubUrl={site.social.github}
+              linkedinUrl={site.social.linkedin}
+              twitterUrl={site.social.twitter}
+              instagramUrl={site.social.instagram}
             />
           </div>
         </ThemeProvider>

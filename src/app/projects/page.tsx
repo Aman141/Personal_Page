@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import ContentCard from "@/components/ContentCard";
 import { projects, projectLink } from "@/data/projects";
 
+const description =
+  "Machine learning, signal processing, and web projects by Aman Kumar.";
+
 export const metadata: Metadata = {
   title: "Projects",
-  description:
-    "Machine learning, signal processing, and web projects by Aman Kumar.",
+  description,
+  alternates: { canonical: "/projects" },
+  openGraph: { title: "Projects", description, url: "/projects" },
 };
 
 export default function ProjectsPage() {

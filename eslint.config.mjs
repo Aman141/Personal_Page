@@ -10,6 +10,18 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // `next lint` used to supply these implicitly. Running the ESLint CLI
+  // directly (see the "lint" script) means declaring them here, or ESLint
+  // walks build output and reports thousands of errors from generated code.
+  {
+    ignores: [
+      ".next/**",
+      "out/**",
+      "build/**",
+      "node_modules/**",
+      "next-env.d.ts",
+    ],
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 

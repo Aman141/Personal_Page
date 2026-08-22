@@ -1,3 +1,15 @@
+import type { Metadata } from "next";
+
+const description =
+  "AI Engineer at EvoLogics working on underwater acoustic detection and tracking. Previously LLM evaluation at Validaitor. M.Sc. Computational Science and Engineering, TUM.";
+
+export const metadata: Metadata = {
+  title: "About",
+  description,
+  alternates: { canonical: "/about" },
+  openGraph: { title: "About", description, url: "/about" },
+};
+
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
