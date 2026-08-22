@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same branch makes an in-flight run obsolete.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Type check, lint, build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Next 16 requires >= 20.9. Match this to the Node version configured
+          # for the Vercel project so CI mirrors what actually deploys.
+          node-version: 22
+          cache: npm
+
+      # `npm ci` rather than `npm install`: it installs strictly from the
+      # lockfile and fails outright if package.json has drifted out of sync —
+      # precisely the state an automated dependency PR can leave behind.
+      - name: Install
+        run: npm ci
+
+      # Ahead of the build for faster feedback. `next build` type-checks too,
+      # but a dedicated step names the failure instead of burying it.
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # `eslint .` — `next lint` was removed in Next 16.
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      # Informational only. A new advisory published upstream should not block
+      # an unrelated pull request, so this reports without failing the run.
+      # Delete the `continue-on-error` line to turn it into a gate.
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+        continue-on-error: true
