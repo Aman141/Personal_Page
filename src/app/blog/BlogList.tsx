@@ -1,10 +1,10 @@
-"use client";
-
 import Image from "next/image";
-import { useMediumPosts, BlogPost } from "@/hooks/useMediumPosts";
+import type { BlogPost } from "@/lib/medium";
 
-// Split out of page.tsx so the route itself can stay a server component and
-// export `metadata` — a client component cannot.
+// No "use client": posts are fetched on the server and passed in, so this
+// renders to HTML. That is the whole point of the change — post titles and
+// summaries are now in the markup for crawlers instead of appearing only
+// after hydration.
 
 const BlogCard = ({ post }: { post: BlogPost }) => {
   return (
@@ -43,23 +43,26 @@ const BlogCard = ({ post }: { post: BlogPost }) => {
   );
 };
 
-export default function BlogList() {
-  const { posts, loading, error } = useMediumPosts();
+export default function BlogList({
+  posts,
+  error,
+}: {
+  posts: BlogPost[];
+  error: string | null;
+}) {
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
+
+  if (posts.length === 0) {
+    return <div className="text-center text-gray-500">No blog posts found.</div>;
+  }
 
   return (
-    <>
-      {loading && (
-        <div className="text-center text-gray-500">Loading posts...</div>
-      )}
-      {error && <div className="text-center text-red-500">{error}</div>}
-      <div>
-        {posts.map((post) => (
-          <BlogCard key={post.id} post={post} />
-        ))}
-      </div>
-      {!loading && posts.length === 0 && !error && (
-        <div className="text-center text-gray-500">No blog posts found.</div>
-      )}
-    </>
+    <div>
+      {posts.map((post) => (
+        <BlogCard key={post.id} post={post} />
+      ))}
+    </div>
   );
 }

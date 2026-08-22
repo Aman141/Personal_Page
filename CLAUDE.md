@@ -50,12 +50,14 @@ If you add a system-preference CSS media query here, make sure it can't override
 
 ### Data: Medium posts
 
-`src/hooks/useMediumPosts.ts` is the only external data source. It pulls the Medium RSS feed through the public `api.rss2json.com` proxy (Medium has no REST API) and maps items to `BlogPost`. Consequences:
+`src/lib/medium.ts` is the only external data source. `getMediumPosts()` reads Medium's RSS feed **on the server** with `next: { revalidate: 3600 }`, parsing it with `fast-xml-parser`.
 
-- Fetching happens client-side in a `useEffect`, so every consumer must be a client component — that's why `src/app/blog/page.tsx` and `popular_contents.tsx` are `"use client"`.
-- `MEDIUM_USERNAME` in the hook is the single source of truth; call `useMediumPosts()` with no argument.
-- `safeThumbnail` drops any thumbnail not on `*.medium.com`, because `next/image` throws on hosts absent from `images.remotePatterns` in `next.config.ts`. Widen both together, never just one. (In practice this feed returns empty thumbnails, so that path is usually dead.)
-- No caching or revalidation, and the proxy is unauthenticated and rate-limited. A feed failure is scoped to the "Featured Blog" section on the home page — keep it that way rather than early-returning from `PopularContents`, which would take the projects section down with it.
+- **Server-side by design.** An earlier version proxied through `api.rss2json.com` purely to dodge CORS, which cost indexability (posts invisible to crawlers), resilience (a third-party outage blanked the section) and time-to-paint. Don't reintroduce a client fetch.
+- The parser sets `isArray` for `item` and `category`: a single element otherwise parses to a bare value instead of an array.
+- The feed has **no `<description>`** — summaries come from `content:encoded`, which is full post HTML, with tags stripped and entities decoded.
+- `safeThumbnail` drops thumbnails not on `*.medium.com` and Medium's `/_/stat` tracking pixel. The host check exists because `next/image` throws on hosts absent from `images.remotePatterns` in `next.config.ts` — **widen both together, never just one.**
+- Failure returns `{ posts: [], error }` rather than throwing, so a feed outage degrades one section instead of failing a page render or a production build.
+- `/blog` and `BlogList` are server components. `popular_contents.tsx` must stay `"use client"` (it owns the sliders), so `src/app/page.tsx` fetches and passes posts down as props — add data there, not inside the client component.
 
 Everything else is hardcoded JSX: the `projects` array in `popular_contents.tsx` and the experience/skills/education content in `src/app/about/page.tsx`. There is no CMS or data layer.
 

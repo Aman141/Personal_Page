@@ -1,101 +1,115 @@
-# My Portfolio
+# Aman Kumar — Portfolio
 
-A modern, minimal portfolio website built with [Next.js](https://nextjs.org), [React](https://react.dev), and [Tailwind CSS](https://tailwindcss.com). This project is designed to showcase your work, skills, and contact information in a clean, responsive layout.
+Personal portfolio site, built with Next.js, React, and Tailwind CSS.
+
+**Live:** [aman-kumar-ai.vercel.app](https://aman-kumar-ai.vercel.app)
 
 ## Features
 
-- ⚡ Built with Next.js 15 and React 19
-- 🎨 Styled with Tailwind CSS 4
-- 🖼️ Optimized images using Next.js Image component
-- 🌗 Light and dark mode, toggleable and persisted to `localStorage`
-- 📄 About, Blog, Projects, and Contact pages (easy to extend)
-- 🚀 Ready to deploy on Vercel or any Node.js host
+- ⚡ Next.js 16 (App Router) and React 19
+- 🎨 Tailwind CSS 4 — configured entirely in CSS, no JS config file
+- 🌗 Light and dark mode, toggled by class and persisted to `localStorage`, applied before first paint so there is no flash
+- 📝 Blog list generated from a Medium RSS feed **on the server**, with hourly revalidation, so posts are crawlable
+- 🔍 SEO metadata per page, plus a build-time generated Open Graph image, `sitemap.xml`, and `robots.txt`
+- 🖼️ Remote images optimised through `next/image`
+- ✅ CI on every pull request: type check, lint, build
+
+## Tech Stack
+
+| | |
+|---|---|
+| Framework | Next.js 16, React 19 |
+| Language | TypeScript (strict) |
+| Styling | Tailwind CSS 4 |
+| Icons | `lucide-react` |
+| Feed parsing | `fast-xml-parser` |
+| Analytics | `@vercel/analytics` |
+| Hosting | Vercel |
+
+## Getting Started
+
+```bash
+npm install
+npm run dev          # http://localhost:3000
+```
+
+### Scripts
+
+| Script | Does |
+|---|---|
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run build` | Production build — type-checks as it goes (`tsconfig` is `noEmit`, so `npx tsc --noEmit` is the standalone check) |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint (`eslint .`) |
+
+> **Don't run `npm run build` while `npm run dev` is running.** Both write to
+> `.next` and will corrupt each other's output.
+
+### Environment
+
+Everything works with no configuration. Two optional variables:
+
+| Variable | Effect |
+|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Overrides the production origin used for canonical URLs, Open Graph tags, and the sitemap. Set this if the domain changes. |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Set to `false` to disable analytics in production. Analytics is always off in development. |
 
 ## Directory Structure
 
 ```
 my-portfolio/
-├── public/                  # Static assets (SVGs, images)
+├── .github/workflows/ci.yml   # type check, lint, build
+├── public/                    # static assets
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx         # Home page
-│   │   ├── layout.tsx       # Root layout (header/footer, theme, analytics)
-│   │   ├── globals.css      # Global styles + Tailwind config
-│   │   ├── about/page.tsx   # About page
-│   │   ├── blog/page.tsx    # Blog page (Medium feed)
-│   │   ├── contact/page.tsx # Contact page (template)
-│   │   ├── projects/page.tsx# Projects page (template)
-│   │   └── components/      # Home-page-only sections
-│   ├── components/          # Shared UI (Header, Footer, …)
-│   ├── context/             # ThemeContext
-│   └── hooks/               # useMediumPosts
-├── package.json             # Project metadata and scripts
-├── tsconfig.json            # TypeScript config
-├── next.config.ts           # Next.js config
-└── ...
+│   │   ├── layout.tsx         # root layout: metadata, theme, header/footer
+│   │   ├── page.tsx           # home — fetches Medium posts, renders Intro
+│   │   ├── globals.css        # Tailwind config + theme tokens
+│   │   ├── opengraph-image.tsx# generated 1200×630 social preview
+│   │   ├── sitemap.ts
+│   │   ├── robots.ts
+│   │   ├── about/ blog/ projects/ contact/
+│   │   └── components/        # home-page-only sections
+│   ├── components/            # shared UI (ContentCard, Header, Footer, …)
+│   ├── context/               # ThemeContext
+│   ├── data/                  # projects.ts, site.ts — static content
+│   └── lib/                   # medium.ts — server-side feed reader
+├── next.config.ts
+├── postcss.config.mjs
+└── eslint.config.mjs
 ```
 
-## Getting Started
+## Customization
 
-### 1. Install dependencies
+| To change | Edit |
+|---|---|
+| Name, role, description, social links | `src/data/site.ts` — feeds metadata, the OG image, and the footer |
+| Projects (home slider and `/projects`) | `src/data/projects.ts` — single source for both |
+| Blog source | `MEDIUM_USERNAME` in `src/lib/medium.ts` |
+| Bio, experience, education | `src/app/about/page.tsx` |
+| Theme colours and Tailwind config | `src/app/globals.css` |
+| Images and icons | `public/` |
 
-Using npm (recommended):
+### Notes for contributors
 
-```bash
-npm install
-```
+- **Tailwind 4 is configured in CSS, not JavaScript.** There is no
+  `tailwind.config.ts`; the `dark:` variant, fonts, and custom utilities are
+  declared in `src/app/globals.css`. Adding a JS config file will have no
+  effect unless it is loaded with `@config`.
+- **Page components must not render their own `<main>`** — `layout.tsx` owns
+  the only one. Use a `<div>` as the page root.
+- After adding a Tailwind `@utility` to `globals.css`, restart the dev server;
+  HMR does not always pick it up.
 
-Or with yarn, pnpm, or bun:
+## Deployment
 
-```bash
-yarn install
-# or
-pnpm install
-# or
-bun install
-```
-
-### 2. Run the development server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the site.
-
-### 3. Build for production
+Deployed on [Vercel](https://vercel.com/); pushes to `main` deploy
+automatically. For any other Node host:
 
 ```bash
 npm run build
 npm start
 ```
-
-## Customization
-
-- **About page:** Edit `src/app/about/page.tsx` to update your bio.
-- **Projects page:** Add your projects in `src/app/projects/page.tsx`.
-- **Contact page:** Add your contact info or form in `src/app/contact/page.tsx`.
-- **Blog:** Set your Medium handle via `MEDIUM_USERNAME` in `src/hooks/useMediumPosts.ts`.
-- **Styling:** Edit `src/app/globals.css` — Tailwind 4 is configured in CSS, not a JS config file.
-- **Assets:** Place images and SVGs in the `public/` directory.
-
-## Tech Stack
-
-- [Next.js 15](https://nextjs.org/)
-- [React 19](https://react.dev/)
-- [Tailwind CSS 4](https://tailwindcss.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-
-## Deployment
-
-Deploy easily on [Vercel](https://vercel.com/) (recommended) or any Node.js server:
-
-1. Build the app: `npm run build`
-2. Start: `npm start`
-
-## Contributing
-
-Feel free to fork this repo and submit pull requests!
 
 ## License
 

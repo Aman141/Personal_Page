@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useMediumPosts } from "../../hooks/useMediumPosts";
+import type { BlogPost } from "@/lib/medium";
 import { featuredProjects, projectLink } from "@/data/projects";
 import ContentCard, { type ContentCardItem } from "@/components/ContentCard";
 
@@ -160,16 +160,16 @@ function EmptyState({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function PopularContents() {
-  const {
-    posts: mediumPosts,
-    loading: blogsLoading,
-    error: blogsError,
-  } = useMediumPosts();
-
+export default function PopularContents({
+  posts,
+  postsError,
+}: {
+  posts: BlogPost[];
+  postsError: string | null;
+}) {
   // Six rather than three: with three cards visible there would be nothing to
   // slide, so the slider only earns its arrows once the feed has more posts.
-  const blogs: (ContentCardItem & { link: string })[] = mediumPosts
+  const blogs: (ContentCardItem & { link: string })[] = posts
     .slice(0, 6)
     .map((post) => ({
       title: post.title,
@@ -231,21 +231,13 @@ export default function PopularContents() {
           />
         }
       >
-        {blogsLoading && (
-          <div className="flex gap-5 overflow-hidden">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className={`${SLIDE_WIDTH} h-56 shrink-0 animate-pulse rounded-xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-900`}
-              />
-            ))}
-          </div>
-        )}
-        {!blogsLoading && blogsError && <EmptyState>{blogsError}</EmptyState>}
-        {!blogsLoading && !blogsError && blogs.length === 0 && (
+        {/* No loading branch: posts arrive as props already resolved on the
+            server, so the first paint is either content or a real empty state. */}
+        {postsError && <EmptyState>{postsError}</EmptyState>}
+        {!postsError && blogs.length === 0 && (
           <EmptyState>No posts yet — check back soon.</EmptyState>
         )}
-        {!blogsLoading && !blogsError && blogs.length > 0 && (
+        {!postsError && blogs.length > 0 && (
           <SliderTrack trackRef={blogSlider.trackRef}>
             {blogs.map((post) => (
               <div
