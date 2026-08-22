@@ -192,35 +192,35 @@ export default function PopularContents() {
       description:
         "A RESTful API for image classification using deep learning, deployed with Docker and FastAPI.",
       tech: "Python, TensorFlow, FastAPI, Docker",
-      link: "/projects/image-classifier-api",
+      link: "/projects",
     },
     {
       title: "NLP Chatbot",
       description:
         "Conversational AI chatbot for customer support, leveraging transformer models and custom intent recognition.",
       tech: "Python, PyTorch, HuggingFace, NLP",
-      link: "/projects/nlp-chatbot",
+      link: "/projects",
     },
     {
       title: "ML Pipeline Automation",
       description:
         "Automated end-to-end ML pipeline for data preprocessing, training, and deployment using CI/CD tools.",
       tech: "Python, Scikit-learn, MLflow, GitHub Actions",
-      link: "/projects/ml-pipeline-automation",
+      link: "/projects",
     },
     {
       title: "Portfolio Website",
       description:
         "Personal portfolio built with Next.js, Tailwind CSS, and deployed on Vercel.",
       tech: "Next.js, Tailwind CSS, Vercel",
-      link: "/projects/portfolio-website",
+      link: "/projects",
     },
     {
       title: "Data Visualization Dashboard",
       description:
         "Interactive dashboard for visualizing large datasets with D3.js and React.",
       tech: "React, D3.js, TypeScript",
-      link: "/projects/data-visualization-dashboard",
+      link: "/projects",
     },
   ];
 
@@ -228,15 +228,7 @@ export default function PopularContents() {
     posts: mediumPosts,
     loading: blogsLoading,
     error: blogsError,
-  } = useMediumPosts("aman-ai");
-
-  if (blogsLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (blogsError) {
-    return <div>Error: {blogsError}</div>;
-  }
+  } = useMediumPosts();
 
   const blogs: CardItem[] = mediumPosts.slice(0, 3).map((post) => ({
     title: post.title,
@@ -282,7 +274,16 @@ export default function PopularContents() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Featured Blog</h2>
           <div className="relative">
-            <CardSlider items={blogs} />
+            {blogsLoading && (
+              <p className="text-center text-gray-500">Loading posts...</p>
+            )}
+            {blogsError && (
+              <p className="text-center text-red-500">{blogsError}</p>
+            )}
+            {!blogsLoading && !blogsError && blogs.length === 0 && (
+              <p className="text-center text-gray-500">No posts yet.</p>
+            )}
+            {blogs.length > 0 && <CardSlider items={blogs} />}
           </div>
           <div className="text-center mt-8">
             <a

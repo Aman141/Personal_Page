@@ -1,35 +1,12 @@
-"use client";
-
 import { Analytics } from "@vercel/analytics/next";
-import { useEffect } from "react";
+
+// Analytics stays off in development so local traffic never reaches production
+// stats; set NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED=false to opt out in production.
+const enabled =
+  process.env.NODE_ENV === "production" &&
+  process.env.NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED !== "false";
 
 export function AnalyticsWrapper() {
-  useEffect(() => {
-    // Log analytics events in development
-    if (process.env.NODE_ENV === "development") {
-      console.log("🔍 Analytics would be tracked here in production");
-
-      // Track page views in development
-      const trackPageView = () => {
-        console.log("📊 Page view tracked:", window.location.pathname);
-      };
-
-      trackPageView();
-
-      // Track navigation
-      const handleRouteChange = () => {
-        console.log("🔄 Route change tracked:", window.location.pathname);
-      };
-
-      window.addEventListener("popstate", handleRouteChange);
-      return () => window.removeEventListener("popstate", handleRouteChange);
-    }
-  }, []);
-
-  // Only render Vercel Analytics in production
-  if (process.env.NODE_ENV === "development") {
-    return null;
-  }
-
+  if (!enabled) return null;
   return <Analytics />;
 }

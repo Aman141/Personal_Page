@@ -15,21 +15,24 @@ const ThemeContext = createContext<{
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<Theme>("light");
 
+  // The inline script in layout.tsx already resolved the theme and applied the
+  // class before first paint, so read back from the DOM rather than re-deriving
+  // it here (which would let the two disagree).
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme;
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    const initial = saved || (prefersDark ? "dark" : "light");
-    setTheme(initial);
-    document.documentElement.classList.toggle("dark", initial === "dark");
+    setTheme(
+      document.documentElement.classList.contains("dark") ? "dark" : "light"
+    );
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // Private browsing / storage disabled — the class still applies for this session.
+    }
   };
 
   return (

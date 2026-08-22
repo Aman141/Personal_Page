@@ -7,27 +7,28 @@ A modern, minimal portfolio website built with [Next.js](https://nextjs.org), [R
 - ⚡ Built with Next.js 15 and React 19
 - 🎨 Styled with Tailwind CSS 4
 - 🖼️ Optimized images using Next.js Image component
-- 🌗 Light and dark mode support (via CSS variables)
-- 📄 About, Projects, and Contact pages (easy to extend)
+- 🌗 Light and dark mode, toggleable and persisted to `localStorage`
+- 📄 About, Blog, Projects, and Contact pages (easy to extend)
 - 🚀 Ready to deploy on Vercel or any Node.js host
 
 ## Directory Structure
 
 ```
 my-portfolio/
-├── app/
-│   ├── about/
-│   │   └── page.tsx         # About page
-│   ├── contact/
-│   │   └── page.tsx         # Contact page (template)
-│   ├── projects/
-│   │   └── page.tsx         # Projects page (template)
 ├── public/                  # Static assets (SVGs, images)
-├── src/app/
-│   ├── page.tsx             # Home page
-│   ├── layout.tsx           # Root layout
-│   ├── globals.css          # Global styles (Tailwind)
-│   └── favicon.ico          # Favicon
+├── src/
+│   ├── app/
+│   │   ├── page.tsx         # Home page
+│   │   ├── layout.tsx       # Root layout (header/footer, theme, analytics)
+│   │   ├── globals.css      # Global styles + Tailwind config
+│   │   ├── about/page.tsx   # About page
+│   │   ├── blog/page.tsx    # Blog page (Medium feed)
+│   │   ├── contact/page.tsx # Contact page (template)
+│   │   ├── projects/page.tsx# Projects page (template)
+│   │   └── components/      # Home-page-only sections
+│   ├── components/          # Shared UI (Header, Footer, …)
+│   ├── context/             # ThemeContext
+│   └── hooks/               # useMediumPosts
 ├── package.json             # Project metadata and scripts
 ├── tsconfig.json            # TypeScript config
 ├── next.config.ts           # Next.js config
@@ -71,10 +72,11 @@ npm start
 
 ## Customization
 
-- **About page:** Edit `app/about/page.tsx` to update your bio.
-- **Projects page:** Add your projects in `app/projects/page.tsx`.
-- **Contact page:** Add your contact info or form in `app/contact/page.tsx`.
-- **Styling:** Edit `src/app/globals.css` for custom styles or Tailwind config.
+- **About page:** Edit `src/app/about/page.tsx` to update your bio.
+- **Projects page:** Add your projects in `src/app/projects/page.tsx`.
+- **Contact page:** Add your contact info or form in `src/app/contact/page.tsx`.
+- **Blog:** Set your Medium handle via `MEDIUM_USERNAME` in `src/hooks/useMediumPosts.ts`.
+- **Styling:** Edit `src/app/globals.css` — Tailwind 4 is configured in CSS, not a JS config file.
 - **Assets:** Place images and SVGs in the `public/` directory.
 
 ## Tech Stack

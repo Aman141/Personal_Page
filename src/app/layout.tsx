@@ -20,16 +20,32 @@ export const metadata = {
   description: "Built with Next.js",
 };
 
+// Runs before the first paint so a dark-mode visitor never sees a white flash.
+// Every `dark:` utility depends on this class, so it has to be applied
+// synchronously rather than in an effect after hydration.
+const themeScript = `
+(function () {
+  try {
+    var saved = localStorage.getItem('theme');
+    var theme = saved === 'light' || saved === 'dark'
+      ? saved
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <ThemeProvider>
           <div className="min-h-screen flex flex-col">
             <Header />

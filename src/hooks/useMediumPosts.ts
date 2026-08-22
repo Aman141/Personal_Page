@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 
-// You can change this to your Medium username
-const MEDIUM_USERNAME = "aman-ai"; // e.g. "aman141kumar-ak" for https://medium.com/@aman141kumar-ak
+// Single source of truth for the Medium handle — callers should not pass their own.
+const MEDIUM_USERNAME = "aman-ai"; // https://medium.com/@aman-ai
 
 export type BlogPost = {
   id: string;
@@ -24,6 +24,17 @@ interface RSSItem {
   thumbnail?: string;
 }
 
+// next/image rejects hosts that aren't in next.config.ts `images.remotePatterns`,
+// and feed thumbnails are arbitrary URLs, so anything off Medium's CDN is dropped.
+function safeThumbnail(url?: string): string | undefined {
+  if (!url) return undefined;
+  try {
+    return new URL(url).hostname.endsWith(".medium.com") ? url : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 async function fetchMediumPosts(username: string): Promise<BlogPost[]> {
   // Medium doesn't have a public REST API, but you can fetch the RSS feed and parse it
   const rssUrl = `https://medium.com/feed/@${username}`;
@@ -41,7 +52,7 @@ async function fetchMediumPosts(username: string): Promise<BlogPost[]> {
     link: item.link || "",
     date: item.pubDate ? new Date(item.pubDate).toISOString().slice(0, 10) : "",
     tags: item.categories || [],
-    thumbnail: item.thumbnail,
+    thumbnail: safeThumbnail(item.thumbnail),
   }));
 }
 

@@ -1,6 +1,6 @@
 export default function ContactPage() {
     return (
-      <main className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-20">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-20">
         <div className="flex flex-col items-center">
           <span className="text-6xl mb-4 animate-bounce">🚧</span>
           <h1 className="text-4xl font-bold mb-2 text-center">Contact Coming Soon</h1>
@@ -16,6 +16,6 @@ export default function ContactPage() {
             </span>
           </div>
         </div>
-      </main>
+      </div>
     );
   }

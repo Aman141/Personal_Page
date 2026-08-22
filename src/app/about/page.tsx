@@ -1,6 +1,6 @@
 export default function AboutPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10">
+    <div className="max-w-3xl mx-auto px-4 py-10">
       <h1 className="text-4xl font-bold mb-6 text-center">
         👋 Hey, I am Aman Kumar
       </h1>
@@ -162,6 +162,6 @@ export default function AboutPage() {
           </a>
         </p>
       </section>
-    </main>
+    </div>
   );
 }
