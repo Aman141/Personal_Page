@@ -1,9 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Code2, FileText } from "lucide-react";
 
-// Shared by the home-page sliders and /projects. Deliberately has no "use
-// client" directive: it holds no state, so it renders on the server for
-// /projects and is bundled into the client component that owns the sliders.
+// Shared by the home-page sliders, /projects and /blog. Deliberately has no
+// "use client" directive: it holds no state, so it renders on the server for
+// /projects and /blog, and is bundled into the client component that owns the
+// sliders.
 
 export interface ContentCardItem {
   title: string;
@@ -13,6 +15,16 @@ export interface ContentCardItem {
   meta?: string;
 }
 
+export interface ContentCardImage {
+  src: string;
+  alt?: string;
+  /**
+   * Required for a correct srcset, because this component is rendered at very
+   * different widths — ~371px in a slider versus ~768px in the blog list.
+   */
+  sizes: string;
+}
+
 const isExternal = (url: string) => /^https?:\/\//.test(url);
 
 export default function ContentCard({
@@ -20,19 +32,25 @@ export default function ContentCard({
   variant,
   href,
   secondary,
+  image,
 }: {
   item: ContentCardItem;
   variant: "project" | "post";
   href: string;
   /** Optional second link, e.g. source when `href` points at a live demo. */
   secondary?: { href: string; label: string };
+  /** Lead image. When present it replaces the gradient icon. */
+  image?: ContentCardImage;
 }) {
   const external = isExternal(href);
   const Icon = variant === "project" ? Code2 : FileText;
   const visibleTags = item.tags.slice(0, 3);
   const hiddenTagCount = item.tags.length - visibleTags.length;
 
-  const stretchedLinkClasses = "absolute inset-0 rounded-xl";
+  // An image and the icon badge would be redundant, so the image wins. Posts
+  // whose feed entry has no usable thumbnail fall back to the icon.
+  const showIcon = !image;
+  const showHeader = showIcon || Boolean(item.meta);
 
   return (
     <div className="group relative flex h-full flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-lg focus-within:ring-2 focus-within:ring-purple-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-purple-700">
@@ -46,32 +64,55 @@ export default function ContentCard({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={item.title}
-          className={stretchedLinkClasses}
+          className="absolute inset-0 rounded-xl"
         />
       ) : (
         <Link
           href={href}
           aria-label={item.title}
-          className={stretchedLinkClasses}
+          className="absolute inset-0 rounded-xl"
         />
       )}
 
-      <div className="flex items-start justify-between gap-3">
-        <span
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-white ${
-            variant === "project"
-              ? "from-purple-500 to-indigo-500"
-              : "from-sky-500 to-emerald-500"
+      {showHeader && (
+        <div className="flex items-start justify-between gap-3">
+          {showIcon && (
+            <span
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-white ${
+                variant === "project"
+                  ? "from-purple-500 to-indigo-500"
+                  : "from-sky-500 to-emerald-500"
+              }`}
+            >
+              <Icon className="h-5 w-5" />
+            </span>
+          )}
+          {item.meta && (
+            <span className="ml-auto shrink-0 text-xs text-gray-500 dark:text-gray-400">
+              {item.meta}
+            </span>
+          )}
+        </div>
+      )}
+
+      {image && (
+        <div
+          // max-h caps the height on wide cards: 16:9 at the blog list's
+          // ~700px would be a ~390px-tall banner. Narrow slider cards are
+          // already under the cap, so they keep the full 16:9 frame.
+          className={`relative aspect-video max-h-56 w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 ${
+            showHeader ? "mt-3" : ""
           }`}
         >
-          <Icon className="h-5 w-5" />
-        </span>
-        {item.meta && (
-          <span className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-            {item.meta}
-          </span>
-        )}
-      </div>
+          <Image
+            src={image.src}
+            alt={image.alt ?? ""}
+            fill
+            sizes={image.sizes}
+            className="object-cover"
+          />
+        </div>
+      )}
 
       {/* line-clamp rather than truncate: these titles wrap to two lines
           instead of being cut off mid-word with an ellipsis. */}

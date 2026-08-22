@@ -1,47 +1,11 @@
-import Image from "next/image";
+import ContentCard from "@/components/ContentCard";
 import type { BlogPost } from "@/lib/medium";
 
-// No "use client": posts are fetched on the server and passed in, so this
-// renders to HTML. That is the whole point of the change — post titles and
-// summaries are now in the markup for crawlers instead of appearing only
-// after hydration.
+// No "use client": posts are fetched on the server and passed in, so titles and
+// summaries land in the HTML for crawlers rather than appearing after hydration.
 
-const BlogCard = ({ post }: { post: BlogPost }) => {
-  return (
-    <a
-      href={post.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block cursor-pointer border border-gray-200 dark:border-gray-700 rounded-lg p-5 bg-white dark:bg-gray-800 shadow hover:shadow-lg transition mb-6 focus:outline-none focus:ring-2 focus:ring-blue-400"
-      aria-label={`Read blog post: ${post.title}`}
-    >
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-xl font-semibold">{post.title}</h2>
-        <span className="text-xs text-gray-500">{post.date}</span>
-      </div>
-      {post.thumbnail && (
-        <Image
-          src={post.thumbnail}
-          alt=""
-          width={768}
-          height={192}
-          className="w-full h-48 object-cover rounded mb-2"
-        />
-      )}
-      <p className="text-gray-700 dark:text-gray-300 mb-2">{post.summary}</p>
-      <div className="flex flex-wrap gap-2">
-        {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className="bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 px-2 py-0.5 rounded text-xs"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </a>
-  );
-};
+/** Single column at max-w-3xl, so the card fills the container on wide screens. */
+const IMAGE_SIZES = "(max-width: 768px) 100vw, 768px";
 
 export default function BlogList({
   posts,
@@ -59,9 +23,24 @@ export default function BlogList({
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
       {posts.map((post) => (
-        <BlogCard key={post.id} post={post} />
+        <ContentCard
+          key={post.id}
+          item={{
+            title: post.title,
+            description: post.summary,
+            tags: post.tags,
+            meta: post.date,
+          }}
+          variant="post"
+          href={post.link}
+          image={
+            post.thumbnail
+              ? { src: post.thumbnail, sizes: IMAGE_SIZES }
+              : undefined
+          }
+        />
       ))}
     </div>
   );

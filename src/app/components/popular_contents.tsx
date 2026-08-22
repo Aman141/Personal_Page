@@ -5,13 +5,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import type { BlogPost } from "@/lib/medium";
 import { featuredProjects, projectLink } from "@/data/projects";
-import ContentCard, { type ContentCardItem } from "@/components/ContentCard";
+import ContentCard from "@/components/ContentCard";
 
 // Three cards visible on desktop, two on tablet, one on mobile. Widths are
 // percentages of the track rather than fixed pixels, so the last visible card
 // can never be clipped by a container narrower than the sum of the cards.
 const SLIDE_WIDTH =
   "w-full sm:w-[calc((100%_-_1.25rem)/2)] lg:w-[calc((100%_-_2.5rem)/3)]";
+
+/** Matches SLIDE_WIDTH: one card per row on mobile, ~1/3 of max-w-6xl above. */
+const SLIDE_IMAGE_SIZES = "(max-width: 640px) 100vw, 400px";
 
 // Scroll position drives the arrows, rather than an index the component owns,
 // so trackpad/touch swipes and arrow clicks can never disagree about where the
@@ -169,15 +172,7 @@ export default function PopularContents({
 }) {
   // Six rather than three: with three cards visible there would be nothing to
   // slide, so the slider only earns its arrows once the feed has more posts.
-  const blogs: (ContentCardItem & { link: string })[] = posts
-    .slice(0, 6)
-    .map((post) => ({
-      title: post.title,
-      description: post.summary,
-      tags: post.tags,
-      link: post.link,
-      meta: post.date,
-    }));
+  const blogs = posts.slice(0, 6);
 
   const projectSlider = useSliderControls(featuredProjects.length);
   const blogSlider = useSliderControls(blogs.length);
@@ -241,10 +236,24 @@ export default function PopularContents({
           <SliderTrack trackRef={blogSlider.trackRef}>
             {blogs.map((post) => (
               <div
-                key={post.link}
+                key={post.id}
                 className={`${SLIDE_WIDTH} shrink-0 snap-start`}
               >
-                <ContentCard item={post} variant="post" href={post.link} />
+                <ContentCard
+                  item={{
+                    title: post.title,
+                    description: post.summary,
+                    tags: post.tags,
+                    meta: post.date,
+                  }}
+                  variant="post"
+                  href={post.link}
+                  image={
+                    post.thumbnail
+                      ? { src: post.thumbnail, sizes: SLIDE_IMAGE_SIZES }
+                      : undefined
+                  }
+                />
               </div>
             ))}
           </SliderTrack>

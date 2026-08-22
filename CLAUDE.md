@@ -21,14 +21,19 @@ Verifying a build in a throwaway copy of the tree **no longer works** if that co
 
 ## Architecture
 
-Next.js 15 App Router + React 19 + Tailwind CSS 4, TypeScript. Deployed on Vercel. Path alias `@/*` → `./src/*`.
+Next.js 16 App Router + React 19 + Tailwind CSS 4, TypeScript. Deployed on Vercel. Path alias `@/*` → `./src/*`.
 
 **Component layout — two directories, and the split is intentional:**
 
-- `src/components/` — chrome shared across every route (`Header`, `Footer`, `DarkModeToggle`, `AnalyticsWrapper`). PascalCase filenames, imported as `@/components/...`.
+- `src/components/` — shared across routes (`ContentCard`, `Header`, `Footer`, `DarkModeToggle`, `AnalyticsWrapper`). PascalCase filenames, imported as `@/components/...`.
 - `src/app/components/` — sections used only by the home page (`intro.tsx`, `popular_contents.tsx`). snake_case filenames, imported relatively from `src/app/page.tsx`.
 
 Shared UI goes in `src/components/`; route-local sections live next to their route.
+
+**`ContentCard` is the only card component** — it backs the home sliders, `/projects` and `/blog`. Don't add a second one; extend it. Two things to know before editing:
+
+- The whole card is clickable via a **stretched-link overlay** (`absolute inset-0`), not a wrapping anchor, so the optional `secondary` link can sit above it with `z-10`. A wrapping anchor makes that impossible — nested `<a>` is invalid HTML.
+- The `image` prop requires an explicit `sizes`. The same component renders at ~371px in a slider and ~694px in the blog list, so one hardcoded value would mis-fetch on one of them.
 
 **Layout composition:** `src/app/layout.tsx` owns the single `<main>` element, wrapping `ThemeProvider` → `Header` → `<main>` → `Footer`. **Page components must not render their own `<main>`** — that would nest two, which is invalid HTML and confuses screen readers. Use a `<div>` as the page root. The footer's email and social URLs are props passed from `layout.tsx`, which is the one place personal contact info lives.
 
