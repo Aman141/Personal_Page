@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import type { BlogPost } from "@/lib/medium";
-import { featuredProjects, projectLink } from "@/data/projects";
+import { featuredProjects, projectHref } from "@/data/projects";
 import ContentCard from "@/components/ContentCard";
 
 // Three cards visible on desktop, two on tablet, one on mobile. Widths are
@@ -201,12 +201,8 @@ export default function PopularContents({
               <ContentCard
                 item={project}
                 variant="project"
-                href={projectLink(project)}
-                secondary={
-                  project.demoUrl
-                    ? { href: project.repoUrl, label: "Source" }
-                    : undefined
-                }
+                href={projectHref(project)}
+                secondary={{ href: project.repoUrl, label: "Source" }}
               />
             </div>
           ))}

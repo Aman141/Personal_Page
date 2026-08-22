@@ -64,7 +64,20 @@ If you add a system-preference CSS media query here, make sure it can't override
 - Failure returns `{ posts: [], error }` rather than throwing, so a feed outage degrades one section instead of failing a page render or a production build.
 - `/blog` and `BlogList` are server components. `popular_contents.tsx` must stay `"use client"` (it owns the sliders), so `src/app/page.tsx` fetches and passes posts down as props — add data there, not inside the client component.
 
-Everything else is hardcoded JSX: the `projects` array in `popular_contents.tsx` and the experience/skills/education content in `src/app/about/page.tsx`. There is no CMS or data layer.
+### Project content
+
+`src/data/projects.ts` is the single source for the home slider, `/projects`, the `/projects/[slug]` detail pages, and the sitemap. Two rules are written into that file and worth respecting:
+
+1. **Only quote a metric the linked source actually reports.**
+2. **If a metric is optimistic, say why in `limitations`.** Three of the five projects have known measurement problems (epoch-level rather than subject-level splits, in-sample error figures). The detail pages publish those caveats in a section as prominent as Results — deliberately, since a reviewer who opens the notebook will find them anyway.
+
+`detail` is a required field, so a project cannot ship a page thinner than its own card.
+
+Everything else is hardcoded JSX: the experience/skills/education content in `src/app/about/page.tsx`. There is no CMS.
+
+### Internal links
+
+Use `next/link` for internal navigation, never a raw `<a href="/...">` — an anchor triggers a full page reload and drops the client-side router. ESLint's `no-html-link-for-pages` catches most cases but has missed some in this repo, so don't rely on it alone.
 
 ### Analytics
 

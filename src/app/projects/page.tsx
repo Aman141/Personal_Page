@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ContentCard from "@/components/ContentCard";
-import { projects, projectLink } from "@/data/projects";
+import { projects, projectHref } from "@/data/projects";
 
 const description =
   "Machine learning, signal processing, and web projects by Aman Kumar.";
@@ -19,8 +19,9 @@ export default function ProjectsPage() {
         <h1 className="text-4xl font-bold">Projects</h1>
         <p className="mt-3 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
           A mix of machine learning and signal-processing work alongside a few
-          things I have built for the web. Each card links to a live demo where
-          one exists, otherwise straight to the source.
+          things I have built for the web. Each one has a write-up covering the
+          approach, results and limitations — with links to the live demo and
+          the source.
         </p>
       </header>
 
@@ -32,12 +33,10 @@ export default function ProjectsPage() {
             key={project.slug}
             item={project}
             variant="project"
-            href={projectLink(project)}
-            secondary={
-              project.demoUrl
-                ? { href: project.repoUrl, label: "Source" }
-                : undefined
-            }
+            href={projectHref(project)}
+            // Source stays on the card even though the detail page also links
+            // it — engineers reading a portfolio want the code without a hop.
+            secondary={{ href: project.repoUrl, label: "Source" }}
           />
         ))}
       </div>

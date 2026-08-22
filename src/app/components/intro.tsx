@@ -1,4 +1,4 @@
-// design a component that displays a short introduction about the user along with a picture of the user on the right side of the screen
+import Link from "next/link";
 
 export default function Intro() {
   return (
@@ -24,7 +24,7 @@ export default function Intro() {
         </p>
 
         {/* Contact Button */}
-        <a
+        <Link
           href="/contact"
           className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
         >
@@ -42,7 +42,7 @@ export default function Intro() {
               d="M9 5l7 7-7 7"
             />
           </svg>
-        </a>
+        </Link>
       </div>
 
       {/* Right Side - Profile Image */}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 const description =
   "AI Engineer at EvoLogics working on underwater acoustic detection and tracking. Previously LLM evaluation at Validaitor. M.Sc. Computational Science and Engineering, TUM.";
@@ -166,12 +167,12 @@ export default function AboutPage() {
       <section className="text-center mt-12">
         <p className="text-xl">
           Curious about what I’ve built? <br />
-          <a
+          <Link
             href="/projects"
-            className="text-blue-600 hover:underline dark:text-blue-400"
+            className="text-purple-600 hover:underline dark:text-purple-400"
           >
             Check out my projects →
-          </a>
+          </Link>
         </p>
       </section>
     </div>
