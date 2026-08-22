@@ -4,6 +4,14 @@
    dark variant is declared here. ThemeContext toggles `.dark` on <html>. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Hide the scrollbar on scroll-snap sliders that supply their own arrow controls. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Wire the Geist fonts loaded in layout.tsx into `font-sans` / `font-mono`. */
 @theme inline {
   --font-sans: var(--font-geist-sans);
