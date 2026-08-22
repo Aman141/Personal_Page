@@ -79,6 +79,15 @@ Everything else is hardcoded JSX: the experience/skills/education content in `sr
 
 Use `next/link` for internal navigation, never a raw `<a href="/...">` — an anchor triggers a full page reload and drops the client-side router. ESLint's `no-html-link-for-pages` catches most cases but has missed some in this repo, so don't rely on it alone.
 
+### Contact form
+
+`/contact` renders a form **only when `RESEND_API_KEY` is set**, checked server-side in `src/app/contact/page.tsx`. Without it the page shows a direct-email panel. This is load-bearing, not defensive styling: a visible form that cannot send silently loses real messages. `src/app/api/contact/route.ts` re-checks the same variable, because build-time and runtime config can differ.
+
+- The page is statically generated, so **the key is read at build time** — adding it to Vercel needs a redeploy to take effect.
+- Resend is called with plain `fetch`, not their SDK, to avoid a dependency. `reply_to` is the visitor's address so replying reaches them.
+- The hidden `company` field is a honeypot. When tripped the handler returns `200`, so a bot can't distinguish rejection from success — don't "fix" this to an error status.
+- `CopyEmailButton` must keep its `stopPropagation`: the row behind it is a `mailto:` link, so without it a copy click also opens the mail client.
+
 ### Analytics
 
 `AnalyticsWrapper` is a server component that renders `@vercel/analytics` only when `NODE_ENV === "production"` and `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED !== "false"`, so local traffic never reaches production stats. The flag is read at build time. Note that `<Analytics />` injects its script after hydration, so it won't appear in server-rendered HTML — to confirm it's bundled, grep `.next/static/chunks/app/` for `_vercel/insights`.

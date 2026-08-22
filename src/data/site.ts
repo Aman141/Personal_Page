@@ -19,6 +19,7 @@ export const site = {
   name: "Aman Kumar",
   role: "AI Engineer",
   location: "Berlin",
+  timezone: "CET",
   description:
     "AI Engineer in Berlin working on machine learning for underwater acoustic detection and tracking, with projects in signal processing and Bayesian modelling.",
   url: resolveSiteUrl(),
@@ -34,3 +35,11 @@ export const site = {
 } as const;
 
 export const siteTitle = `${site.name} — ${site.role}`;
+
+/**
+ * Availability pill on /contact. Set to a short string to show it — e.g.
+ * "Open to freelance work" or "Open to research collaboration" — or leave it
+ * null to hide it. Deliberately off by default: this page is public, and a
+ * job-seeking signal is visible to current colleagues too.
+ */
+export const availability: string | null = null;

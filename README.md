@@ -51,8 +51,25 @@ Everything works with no configuration. Two optional variables:
 
 | Variable | Effect |
 |---|---|
+| `RESEND_API_KEY` | Activates the `/contact` form. Without it the page shows a direct-email panel instead of a form, so a message is never silently dropped. See below. |
+| `CONTACT_FROM_EMAIL` | Sender address for contact-form mail. Only needed once you have a domain verified with Resend. |
 | `NEXT_PUBLIC_SITE_URL` | Overrides the production origin used for canonical URLs, Open Graph tags, and the sitemap. Set this if the domain changes. |
-| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Set to `false` to disable analytics in production. Analytics is always off in development. |
+| `NEXT_PUBLIC_VERCEL_ANALYTICS_ENABLED` | Set to `false` to disable analytics and speed insights in production. Both are always off in development. |
+
+#### Activating the contact form
+
+1. Create an account at [resend.com](https://resend.com) and generate an API key.
+2. Add it to the Vercel project as `RESEND_API_KEY`.
+3. **Redeploy.** `/contact` is statically generated, so the presence of the key
+   is read at build time — adding the variable alone will not switch the form on.
+
+Until then `/contact` renders a direct-email panel rather than a form. That is
+deliberate: a form that posts into a void loses real messages.
+
+The default sender is Resend's shared `onboarding@resend.dev`, which needs no
+DNS setup but **only delivers to the address that owns the Resend account** —
+fine here, since the form emails you. Verify a domain and set
+`CONTACT_FROM_EMAIL` to change that.
 
 ## Directory Structure
 
