@@ -5,13 +5,52 @@ import { CheckCircle2, Loader2, Send, TriangleAlert } from "lucide-react";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-// The form sits inside the dark contact panel, which is dark in both themes,
-// so these are fixed white-on-dark rather than adaptive ink tokens.
-const FIELD_CLASSES =
-  "w-full rounded-lg border border-white/20 bg-black/30 px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/35 focus:border-accent disabled:opacity-60";
+/**
+ * Which palette family the form is drawn from.
+ *
+ * `dark` is for the fixed dark panels — those are dark in both themes, so the
+ * styling is hardcoded white-on-dark. `light` is for adaptive surfaces, where
+ * the ink tokens flip under `.dark` and the form follows the page.
+ *
+ * This exists because the layouts put the form on different backgrounds; the
+ * behaviour below is identical either way.
+ */
+export type FormTone = "dark" | "light";
 
-const LABEL_CLASSES =
-  "mono-label mb-2 block text-[11px] tracking-[0.14em] text-white/50";
+const TONES: Record<FormTone, Record<string, string>> = {
+  dark: {
+    shell: "rounded-[18px] border border-white/14 bg-white/6 p-7",
+    heading: "text-white",
+    sub: "text-white/60",
+    label: "mono-label mb-2 block text-[11px] tracking-[0.14em] text-white/50",
+    field:
+      "w-full rounded-lg border border-white/20 bg-black/30 px-4 py-3 text-[15px] text-white outline-none transition-colors placeholder:text-white/35 focus:border-accent disabled:opacity-60",
+    error: "border-amber-300/40 bg-amber-200/10 text-amber-100",
+    errorLink: "text-accent underline",
+    submit: "bg-accent text-deep hover:bg-accent-soft",
+    sentShell: "rounded-[18px] border border-accent/28 bg-teal/40 p-7",
+    sentBadge: "bg-accent text-deep",
+    sentBody: "text-white/70",
+    sentAgain: "border-accent/40 text-accent hover:text-white",
+  },
+  light: {
+    shell: "rounded-[18px] border border-line-subtle bg-surface-subtle p-7",
+    heading: "text-ink",
+    sub: "text-ink-muted",
+    label: "mono-label mb-2 block text-[11px] tracking-[0.14em] text-ink-faint",
+    field:
+      "w-full rounded-lg border border-line bg-surface px-4 py-3 text-[15px] text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-action disabled:opacity-60",
+    error:
+      "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-300/40 dark:bg-amber-200/10 dark:text-amber-100",
+    errorLink: "text-action underline",
+    submit:
+      "bg-deep text-white hover:bg-teal dark:bg-accent dark:text-deep dark:hover:bg-accent-soft",
+    sentShell: "rounded-[18px] border border-line-subtle bg-surface-subtle p-7",
+    sentBadge: "bg-action text-white dark:bg-accent dark:text-deep",
+    sentBody: "text-ink-muted",
+    sentAgain: "border-action/40 text-action hover:text-ink",
+  },
+};
 
 const ERROR_MESSAGES: Record<string, string> = {
   missing_fields: "Please fill in every field.",
@@ -23,7 +62,14 @@ const ERROR_MESSAGES: Record<string, string> = {
 const FALLBACK_ERROR =
   "Something went wrong sending that. Please email me directly.";
 
-export default function ContactForm({ email }: { email: string }) {
+export default function ContactForm({
+  email,
+  tone = "dark",
+}: {
+  email: string;
+  tone?: FormTone;
+}) {
+  const t = TONES[tone];
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -70,20 +116,26 @@ export default function ContactForm({ email }: { email: string }) {
         // aria-live so screen readers announce the outcome, since the form
         // that had focus has just been replaced.
         aria-live="polite"
-        className="flex flex-col items-start rounded-[18px] border border-accent/28 bg-teal/40 p-7"
+        className={`flex flex-col items-start ${t.sentShell}`}
       >
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-deep">
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-full ${t.sentBadge}`}
+        >
           <CheckCircle2 className="h-5 w-5" />
         </span>
-        <h2 className="mt-5 text-lg font-normal text-white">Message sent</h2>
-        <p className="mt-3 max-w-sm text-[15px] leading-relaxed font-light text-white/70">
+        <h2 className={`mt-5 text-lg font-normal ${t.heading}`}>
+          Message sent
+        </h2>
+        <p
+          className={`mt-3 max-w-sm text-[15px] leading-relaxed font-light ${t.sentBody}`}
+        >
           Thanks for reaching out — it landed in my inbox and I&apos;ll reply
           from there.
         </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="mono-label mt-6 border-b border-accent/40 pb-1 text-[12px] tracking-[0.08em] text-accent transition-colors hover:text-white"
+          className={`mono-label mt-6 border-b pb-1 text-[12px] tracking-[0.08em] transition-colors ${t.sentAgain}`}
         >
           Send another
         </button>
@@ -94,18 +146,15 @@ export default function ContactForm({ email }: { email: string }) {
   const sending = status === "sending";
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-[18px] border border-white/14 bg-white/6 p-7"
-    >
-      <h2 className="m-0 text-lg font-normal text-white">Send a message</h2>
-      <p className="mt-2 text-[15px] font-light text-white/60">
+    <form onSubmit={handleSubmit} className={t.shell}>
+      <h2 className={`m-0 text-lg font-normal ${t.heading}`}>Send a message</h2>
+      <p className={`mt-2 text-[15px] font-light ${t.sub}`}>
         Goes straight to my inbox.
       </p>
 
       <div className="mt-7 space-y-4">
         <div>
-          <label htmlFor="name" className={LABEL_CLASSES}>
+          <label htmlFor="name" className={t.label}>
             Name
           </label>
           <input
@@ -116,12 +165,12 @@ export default function ContactForm({ email }: { email: string }) {
             maxLength={100}
             autoComplete="name"
             disabled={sending}
-            className={FIELD_CLASSES}
+            className={t.field}
           />
         </div>
 
         <div>
-          <label htmlFor="email" className={LABEL_CLASSES}>
+          <label htmlFor="email" className={t.label}>
             Email
           </label>
           <input
@@ -132,13 +181,13 @@ export default function ContactForm({ email }: { email: string }) {
             maxLength={200}
             autoComplete="email"
             disabled={sending}
-            className={FIELD_CLASSES}
+            className={t.field}
             placeholder="so I can reply"
           />
         </div>
 
         <div>
-          <label htmlFor="message" className={LABEL_CLASSES}>
+          <label htmlFor="message" className={t.label}>
             Message
           </label>
           <textarea
@@ -148,7 +197,7 @@ export default function ContactForm({ email }: { email: string }) {
             rows={6}
             maxLength={5000}
             disabled={sending}
-            className={`${FIELD_CLASSES} resize-y`}
+            className={`${t.field} resize-y`}
           />
         </div>
 
@@ -164,12 +213,12 @@ export default function ContactForm({ email }: { email: string }) {
       {error && (
         <p
           role="alert"
-          className="mt-5 flex items-start gap-2.5 rounded-lg border border-amber-300/40 bg-amber-200/10 p-3.5 text-sm font-light text-amber-100"
+          className={`mt-5 flex items-start gap-2.5 rounded-lg border p-3.5 text-sm font-light ${t.error}`}
         >
           <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
             {error}{" "}
-            <a href={`mailto:${email}`} className="text-accent underline">
+            <a href={`mailto:${email}`} className={t.errorLink}>
               {email}
             </a>
           </span>
@@ -179,7 +228,7 @@ export default function ContactForm({ email }: { email: string }) {
       <button
         type="submit"
         disabled={sending}
-        className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-5 py-3.5 text-[15px] text-deep transition-colors hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60"
+        className={`mt-7 inline-flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3.5 text-[15px] transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${t.submit}`}
       >
         {sending ? (
           <>
