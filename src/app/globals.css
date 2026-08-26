@@ -9,12 +9,13 @@
 
    The design has two kinds of surface and they behave differently:
 
-   1. FIXED — `abyss`, `deep`, `teal`, `accent`. Five feature bands are dark in
-      every theme by design: the home hero, the strip under it, each project
-      page's header, the contact page's header, and the RAGdemo demo panel.
-      Their values never change, so text on them is safely hardcoded white.
-   2. ADAPTIVE — `surface`, `ink`, `line`, `action`. Everything else, including
-      the site header, the footer and the 404. They flip under `.dark`.
+   1. FIXED — `abyss`, `deep`, `teal`, `accent`. Three feature bands are dark in
+      every theme by design: each project page's header, the contact page's
+      header, and the RAGdemo demo panel. Their values never change, so text on
+      them is safely hardcoded white.
+   2. ADAPTIVE — `surface`, `ink`, `line`, `action`, `hero`. Everything else,
+      including the site header, the footer, the 404, and the home hero and the
+      strip under it. They flip under `.dark`.
 
    Chrome is adaptive and feature bands are not, which is the distinction to
    apply when adding a section. Header, footer and 404 were originally fixed
@@ -57,6 +58,29 @@
   --action: #0b6c9b;
   --action-hover: #08557a;
 
+  /* Home hero. The dark theme is the canvas's 105deg wash: near-black at the
+     left where the headline sits, opening to teal at the right. Light mirrors
+     it — accent blue at the left, clearing to white at the right — so the
+     composition reads the same way and the copy always sits on the dense end.
+     Both washes are transparent at the far end, which is where the sonar
+     traces show through. */
+  --hero-bg: #ffffff;
+  --hero-wash: linear-gradient(
+    105deg,
+    rgba(130, 207, 255, 0.62) 0%,
+    rgba(130, 207, 255, 0.3) 48%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  /* SonarCanvas appends its own alpha to this, so it must stay a 6-digit hex —
+     a named colour or an rgb() would produce an invalid strokeStyle and the
+     waves would silently not draw. */
+  --sonar-stroke: #0b6c9b;
+  /* The hero's small accent labels, which sit on the densest part of the wash.
+     --action is the right hue but only reaches 4.16:1 against it, and these are
+     11-12px, so they need 4.5:1. This is --action taken two steps darker;
+     under .dark the wash inverts and the ordinary accent clears easily. */
+  --hero-label: #08557a;
+
   /* Fixed, like the dark surfaces they are built from. Used for the image
      panels on /about until real photographs replace them. */
   --gradient-diagonal: linear-gradient(135deg, #061726 0%, #004144 100%);
@@ -81,6 +105,16 @@
   --line-subtle: rgba(255, 255, 255, 0.09);
   --action: #82cfff;
   --action-hover: #b4e1ff;
+
+  --hero-bg: #061726;
+  --hero-wash: linear-gradient(
+    105deg,
+    rgba(0, 13, 25, 0.94) 0%,
+    rgba(0, 13, 25, 0.62) 48%,
+    rgba(0, 65, 68, 0.28) 100%
+  );
+  --sonar-stroke: #82cfff;
+  --hero-label: #82cfff;
 }
 
 /* `inline` is load-bearing: it makes each utility emit `var(--surface)` rather
@@ -106,6 +140,8 @@
   --color-line-subtle: var(--line-subtle);
   --color-action: var(--action);
   --color-action-hover: var(--action-hover);
+  --color-hero: var(--hero-bg);
+  --color-hero-label: var(--hero-label);
 }
 
 /* The design's page gutter. Every section is full-bleed so its background

@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-/** Matches `--accent`. Only used if the token cannot be read off the document. */
-const FALLBACK_ACCENT = "#82cfff";
+/** Matches `--sonar-stroke`. Only used if the token cannot be read. */
+const FALLBACK_STROKE = "#82cfff";
 
 const GRID_SPACING = 72;
 const WAVE_COUNT = 6;
@@ -24,14 +24,25 @@ export default function SonarCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Read the accent off the document so this stays in step with globals.css
-    // instead of holding a second copy of the value.
-    const token = getComputedStyle(document.documentElement)
-      .getPropertyValue("--accent")
-      .trim();
-    const accent = /^#[0-9a-f]{6}$/i.test(token) ? token : FALLBACK_ACCENT;
+    // Read the stroke colour off the document so this stays in step with
+    // globals.css instead of holding a second copy of the value. It has to be
+    // re-read on every theme change, not just at mount: the token flips
+    // between a light accent and a dark blue, and a canvas keeps whatever was
+    // painted last, so a stale colour survives until something forces a
+    // repaint.
+    let colour = FALLBACK_STROKE;
+    const readColour = () => {
+      const token = getComputedStyle(document.documentElement)
+        .getPropertyValue("--sonar-stroke")
+        .trim();
+      // Alpha is appended as two hex digits below, so anything but a 6-digit
+      // hex would produce an invalid strokeStyle and draw nothing.
+      colour = /^#[0-9a-f]{6}$/i.test(token) ? token : FALLBACK_STROKE;
+    };
+    readColour();
+
     const stroke = (alpha: number) =>
-      accent +
+      colour +
       Math.round(255 * alpha)
         .toString(16)
         .padStart(2, "0");
@@ -132,9 +143,23 @@ export default function SonarCanvas() {
     };
     reduced.addEventListener("change", onPreferenceChange);
 
+    // ThemeContext toggles `.dark` on <html>. Watching the attribute is what
+    // keeps the sweep in the right colour after a toggle — under reduced
+    // motion especially, where only one frame is ever painted and nothing else
+    // would trigger a repaint.
+    const themeObserver = new MutationObserver(() => {
+      readColour();
+      if (reduced.matches) paint(0);
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     return () => {
       stop();
       observer.disconnect();
+      themeObserver.disconnect();
       window.removeEventListener("resize", resize);
       reduced.removeEventListener("change", onPreferenceChange);
     };
