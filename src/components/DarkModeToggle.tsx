@@ -11,14 +11,13 @@ export default function DarkModeToggle() {
   // before the provider has mounted. Reading the theme into state here would
   // reintroduce the flash the inline script in layout.tsx exists to prevent.
   //
-  // The button lives in the header, which is dark in both themes, so its
-  // colours are fixed white rather than adaptive ink tokens.
+  // The header is adaptive, so this is too.
   return (
     <button
       type="button"
       onClick={toggleTheme}
       aria-label="Toggle dark mode"
-      className="flex h-8.5 w-8.5 items-center justify-center rounded-full border border-white/25 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+      className="flex h-8.5 w-8.5 items-center justify-center rounded-full border border-line text-ink-faint transition-colors hover:bg-surface-subtle hover:text-ink"
     >
       <Moon className="h-4 w-4 dark:hidden" aria-hidden="true" />
       <Sun className="hidden h-4 w-4 dark:block" aria-hidden="true" />

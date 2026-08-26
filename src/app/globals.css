@@ -9,17 +9,23 @@
 
    The design has two kinds of surface and they behave differently:
 
-   1. FIXED — `abyss`, `deep`, `teal`, `accent`. The hero, the project header,
-      the contact panel and the footer are dark in every theme, by design. Their
-      values never change, so text on them can safely be hardcoded white.
-   2. ADAPTIVE — `surface`, `ink`, `line`, `action`. These are the sections the
-      design draws on white (work index, blog, project body). They flip under
-      `.dark`.
+   1. FIXED — `abyss`, `deep`, `teal`, `accent`. Five feature bands are dark in
+      every theme by design: the home hero, the strip under it, each project
+      page's header, the contact page's header, and the RAGdemo demo panel.
+      Their values never change, so text on them is safely hardcoded white.
+   2. ADAPTIVE — `surface`, `ink`, `line`, `action`. Everything else, including
+      the site header, the footer and the 404. They flip under `.dark`.
 
-   Keeping the two families separate is what lets a dark section sit next to an
-   adaptive one without either having to know the current theme. Do not give a
-   fixed token a `.dark` override — the hero would then match the section below
-   it and the boundary between them would disappear.
+   Chrome is adaptive and feature bands are not, which is the distinction to
+   apply when adding a section. Header, footer and 404 were originally fixed
+   too; that left roughly 840px of unchanging dark at the top of the home page
+   and gave the 404 no adaptive band at all, so light mode reached almost
+   nothing a visitor saw first.
+
+   Keeping the two families separate is what lets a dark band sit next to an
+   adaptive section without either having to know the current theme. Do not
+   give a fixed token a `.dark` override — the hero would then match the
+   section below it and the boundary between them would disappear.
 
    Sourced from the Evologics design system referenced by the design canvas.
    That system is not vendored here, so these are the resolved values rather
@@ -39,7 +45,11 @@
   --surface-subtle: #f4f7fa;
   --ink: #061726;
   --ink-muted: #4a5a6a;
-  --ink-faint: #6b7c8c;
+  /* Not lighter than this. --ink-faint carries the 11-12px monospace labels
+     used all over the site, and small text needs 4.5:1; the previous #6b7c8c
+     was 4.30:1 on white and 4.00:1 on --surface-subtle, so every eyebrow and
+     meta line on the site failed AA. This clears both (5.23:1 / 4.86:1). */
+  --ink-faint: #5e6e80;
   --line: #dae2e8;
   --line-subtle: #eaeff3;
   /* Not the accent: #82CFFF on white is ~1.5:1 and unreadable. The dark

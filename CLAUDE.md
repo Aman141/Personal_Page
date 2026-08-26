@@ -50,17 +50,23 @@ There is **no `tailwind.config.ts`** — Tailwind 4 no longer auto-detects JS co
 
 **The palette has two families, and the split is the whole design.**
 
-- **Fixed** — `--abyss`, `--deep`, `--teal`, `--accent`, and the gradients. The hero, project header, contact panel, 404 and footer are dark in *every* theme, by design. Text on them is hardcoded `text-white` / `text-white/70`. **Never give a fixed token a `.dark` override** — `--surface` in dark mode is deliberately close to `--deep`, so overriding `--deep` too would collapse the boundary between a dark band and the section under it.
+- **Fixed** — `--abyss`, `--deep`, `--teal`, `--accent`, and the gradients. Text on them is hardcoded `text-white` / `text-white/70`. **Never give a fixed token a `.dark` override** — `--surface` in dark mode is deliberately close to `--deep`, so overriding `--deep` too would collapse the boundary between a dark band and the section under it.
 - **Adaptive** — `--surface`, `--surface-subtle`, `--ink*`, `--line*`, `--action`. These are the sections the design draws on white, and they flip under `.dark`.
 
-`--action` is **not** the accent. `#82CFFF` on white is about 1.5:1 and unreadable, so adaptive sections get a darker blue and only the fixed dark surfaces get the light accent.
+**Only five bands are fixed dark**, and they are all feature bands rather than chrome: the home hero, the strip under it, each project page's header, the contact page's header, and the RAGdemo demo panel. Everything else — including the site header, the footer and the 404 — is adaptive.
+
+That split was not the original one. The site header, footer and 404 were fixed dark too, which meant light mode reached almost none of what a visitor actually saw: on the home page the header, the 640px hero and the strip stacked to roughly 840px of unchanging dark before the first adaptive section, so on a laptop the entire first screen was identical in both themes, and the 404 had no adaptive band at all. Chrome appears on every route, so it has to follow the theme; feature bands are a deliberate accent and do not. If you add a new band, ask which of those two it is.
+
+To check this after a change: grep the prerendered HTML in `.next/server/app/` for the background class on each `<header>`, `<section>` and `<footer>`. Bands are the only thing that matters here — a `bg-deep` button on an adaptive surface is fine and expected.
+
+`--action` is **not** the accent. `#82CFFF` on white is about 1.5:1 and unreadable, so adaptive sections get a darker blue and only the fixed dark surfaces get the light accent. The same applies to filled controls: the Contact pill and the 404 button are `bg-deep text-white` in light mode and only become `bg-accent text-deep` under `dark:`.
 
 The design canvas targets Aeonik / Aeonik Fono from the Evologics design system. Neither is licensed here, so Geist Sans and Geist Mono stand in — both were already loaded, and the design leans on 300-weight text that Geist carries.
 
 The theme is resolved in three steps, and the order matters:
 
 1. A blocking inline `<script>` at the top of `<body>` in `layout.tsx` reads `localStorage.theme` (falling back to `prefers-color-scheme`) and applies `.dark` **before first paint**. Since every `dark:` utility now depends on that class, deferring this to an effect would flash a light page at dark-mode visitors. `<html>` carries `suppressHydrationWarning` because the script mutates its className pre-hydration.
-2. `DarkModeToggle` renders both icons and lets CSS (`dark:hidden` / `hidden dark:block`) choose, so the button is correct on first paint without waiting for any state to sync. It lives in the header, which is dark in both themes, so its own colours are fixed white rather than adaptive ink tokens.
+2. `DarkModeToggle` renders both icons and lets CSS (`dark:hidden` / `hidden dark:block`) choose, so the button is correct on first paint without waiting for any state to sync. It sits in the header, which is adaptive, so its own colours are ink tokens too.
 3. `ThemeContext` therefore holds **no state at all** — it exposes only `toggleTheme`, which reads the current class off `<html>` at click time. The `dark` class is the single source of truth. It previously mirrored that class into `useState` via an effect; nothing ever read the value, and `react-hooks/set-state-in-effect` rightly flags the pattern. Don't reintroduce it unless something genuinely needs to render off the theme value — and if it does, reach for `useSyncExternalStore` rather than an effect.
 
 If you add a system-preference CSS media query here, make sure it can't override `html.dark` — step 1 already handles the system default, so a media query is redundant and will fight the toggle.
