@@ -109,7 +109,10 @@ Use `next/link` for internal navigation, never a raw `<a href="/...">` — an an
 - Resend is called with plain `fetch`, not their SDK, to avoid a dependency. `reply_to` is the visitor's address so replying reaches them.
 - The hidden `company` field is a honeypot. When tripped the handler returns `200`, so a bot can't distinguish rejection from success — don't "fix" this to an error status.
 - `CopyEmailButton` sits *beside* the `mailto:` link now rather than on top of it, so its `stopPropagation` is belt-and-braces rather than load-bearing. Keep it anyway — it is what stops a copy click also opening the mail client if the button is ever nested inside a link again.
-- The form is rendered inside the dark contact panel, which is dark in both themes, so its field styling is fixed white-on-dark rather than adaptive ink tokens.
+- **The page is two-tone: a dark header, then the body on `--surface`.** The dark band stops at the header deliberately — every other route either opens dark and resolves to light or is light throughout, and a page that stayed dark to the footer would be the only one on the site that does. It also puts the form on an adaptive surface, where its fields use the ink tokens and follow the page theme instead of being three near-black layers deep.
+- The form is the primary action and takes the wider column; the address sits in the rail beside it at body size. Three other layouts were built and compared before this one was chosen (`git log` on `src/app/contact/`), including one that gave the address display size next to the form — two calls to action at the same weight, which is the thing this layout exists to avoid. Don't reintroduce that.
+- `ContactForm`, `CopyEmailButton` and `EmailFallback` were briefly parameterised over a `tone` prop while those layouts were being compared. Only the adaptive path survived, so the prop is gone — recover it from history rather than re-deriving it if a dark panel ever needs one.
+- `channels.ts` is the single list of ways to reach me, ordered by what to try first. `socialChannels` drops email for layouts that give the address its own slot, and `externalProps` is what keeps `mailto:` from opening in a new tab.
 
 ### Analytics
 

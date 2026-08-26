@@ -6,18 +6,7 @@ import { Check, Copy } from "lucide-react";
 // Isolated as its own client component so the panel around it stays
 // server-rendered — the email address and social links belong in the HTML.
 
-const TONES = {
-  dark: "border-white/22 text-white/60 hover:bg-white/10 hover:text-white",
-  light: "border-line text-ink-faint hover:bg-surface-subtle hover:text-ink",
-};
-
-export default function CopyEmailButton({
-  value,
-  tone = "dark",
-}: {
-  value: string;
-  tone?: keyof typeof TONES;
-}) {
+export default function CopyEmailButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -43,14 +32,10 @@ export default function CopyEmailButton({
         }
       }}
       aria-label={copied ? "Email address copied" : "Copy email address"}
-      className={`relative z-10 shrink-0 rounded-full border p-2 transition-colors ${TONES[tone]}`}
+      className="relative z-10 shrink-0 rounded-full border border-line p-2 text-ink-faint transition-colors hover:bg-surface-subtle hover:text-ink"
     >
       {copied ? (
-        <Check
-          className={
-            tone === "dark" ? "h-4 w-4 text-accent" : "h-4 w-4 text-action"
-          }
-        />
+        <Check className="h-4 w-4 text-action" />
       ) : (
         <Copy className="h-4 w-4" />
       )}
