@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { aboutFacts } from "@/data/site";
 
 const description =
   "AI Engineer at EvoLogics working on underwater acoustic detection and tracking. Previously LLM evaluation at Validaitor. M.Sc. Computational Science and Engineering, TUM.";
@@ -11,169 +12,202 @@ export const metadata: Metadata = {
   openGraph: { title: "About", description, url: "/about" },
 };
 
+const experience = [
+  {
+    period: "2025 – Present",
+    org: "EvoLogics",
+    role: "AI Engineer",
+    points: [
+      "Designing AI algorithms for underwater event detection, object localization and tracking from acoustic data.",
+      "Working on solutions for real-world marine challenges.",
+    ],
+  },
+  {
+    period: "2023 – 2024",
+    org: "Validaitor",
+    role: "AI Software Engineer",
+    points: [
+      "Led the development of evaluation frameworks for LLMs.",
+      "Worked across the stack using Django and Node.js.",
+      "Helped shape tools for AI safety and governance.",
+    ],
+  },
+];
+
+const education = [
+  {
+    period: "2020 – 2023",
+    org: "TUM",
+    qualification: "M.Sc. Computational Science and Engineering",
+    note: "Specialised in machine learning and deep learning for graphics, sequences and crowd modelling.",
+  },
+  {
+    period: "2014 – 2018",
+    org: "IIT (BHU)",
+    qualification: "B.Tech. Mechanical Engineering",
+    note: "Where I first fell in love with optimization and probability.",
+  },
+];
+
+// prettier-ignore
+const skills = [
+  "Python", "C++", "SQL", "TensorFlow", "PyTorch", "Sklearn", "Pandas",
+  "NumPy", "React", "Django", "Node.js", "Docker", "Git", "MLOps",
+  "Computer Vision", "NLP", "Data Analysis", "Pytest", "TypeScript",
+];
+
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-4xl font-bold mb-6 text-center">
-        👋 Hey, I am Aman Kumar
-      </h1>
+    <div>
+      <section className="bg-surface-subtle pt-22 pb-25">
+        <div className="shell flex flex-wrap items-start gap-x-18 gap-y-12">
+          <div className="min-w-0 flex-[1_1_27.5rem]">
+            <p className="mono-label mb-5 text-[12px] tracking-[0.14em] text-ink-muted">
+              About
+            </p>
+            <h1 className="m-0 mb-7 max-w-[40ch] text-[clamp(1.5rem,2.6vw,2.125rem)] leading-[1.36] font-light tracking-[-0.014em] text-pretty">
+              I work on machine learning for underwater acoustics — turning
+              noisy hydrophone data into detections and tracks that hold up in
+              the field.
+            </h1>
+            <p className="m-0 mb-5 max-w-[64ch] text-[17px] leading-[1.72] font-light text-ink-muted text-pretty">
+              Most of the work is not the model. It is the feature pipeline in
+              front of it, the Bayesian layer where uncertainty actually
+              matters, and the interface behind it so results are usable by
+              people who did not train anything. The projects in the index each
+              isolate one of those pieces.
+            </p>
+            <p className="m-0 max-w-[64ch] text-[17px] leading-[1.72] font-light text-ink-muted text-pretty">
+              Away from the screen: a camera, long routes across Europe, and
+              German somewhere between B1 and fluent. I write up what I learn on
+              Medium, mostly about the tools everyone uses and few people read
+              the manual for.
+            </p>
 
-      <section className="mb-8 space-y-3 text-lg leading-relaxed">
-        <p>
-          An innovative software developer and machine learning engineer known
-          for delivering impactful solutions. With expertise in development and
-          machine learning, I work on cutting-edge technologies to create
-          efficient and scalable software experiences. I am a problem solver at
-          heart, and I thrive in dynamic and challenging environments. I am
-          passionate about staying ahead of emerging technologies and trends,
-          attending conferences, and participating in online communities to
-          expand my knowledge and skills.
-        </p>
-      </section>
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
-          <span className="text-3xl">💼</span>
-          <span>Experience</span>
-        </h2>
-        <div className="flex flex-col gap-6">
-          {/* EvoLogics */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-6 hover:shadow-lg transition">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="inline-block bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 px-2 py-1 rounded text-xs font-semibold">
-                  2025 – Present
-                </span>
-                <span className="font-semibold text-lg">EvoLogics</span>
-                <span className="text-gray-500 dark:text-gray-400 text-base hidden sm:inline">—</span>
-                <span className="text-base text-purple-700 dark:text-purple-300 font-medium">AI Engineer</span>
-              </div>
-            </div>
-            <ul className="list-disc list-inside ml-5 mt-2 text-base space-y-1">
-              <li>
-                Designing AI algorithms for underwater event detection, object localization, and tracking using acoustic data.
-              </li>
-              <li>
-                Working on innovative solutions for real-world marine challenges. <span className="inline-block">🌊</span>
-              </li>
-            </ul>
+            <dl className="mt-11 grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-px overflow-hidden rounded-xl border border-line-subtle bg-line-subtle">
+              {aboutFacts.map(({ label, value }) => (
+                <div key={label} className="bg-surface p-5.5">
+                  <dt className="mono-label mb-2 text-[11px] tracking-[0.14em] text-ink-faint">
+                    {label}
+                  </dt>
+                  <dd className="text-base font-light">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
-          {/* Validaitor */}
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm p-6 hover:shadow-lg transition">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="inline-block bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 px-2 py-1 rounded text-xs font-semibold">
-                  2023 – 2024
-                </span>
-                <span className="font-semibold text-lg">Validaitor</span>
-                <span className="text-gray-500 dark:text-gray-400 text-base hidden sm:inline">—</span>
-                <span className="text-base text-purple-700 dark:text-purple-300 font-medium">AI Software Engineer</span>
-              </div>
-            </div>
-            <ul className="list-disc list-inside ml-5 mt-2 text-base space-y-1">
-              <li>Led the development of evaluation frameworks for LLMs.</li>
-              <li>Worked across the stack using Django and Node.js.</li>
-              <li>Helped shape tools for AI safety and governance.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
 
-      <section className="w-full max-w-2xl mb-10">
-        <h3 className="text-xl font-semibold mb-3">🛠 Skills & Tools</h3>
-        <ul className="flex flex-wrap gap-3 text-sm">
-          {[
-            "Python",
-            "C++",
-            "SQL",
-            "TensorFlow",
-            "PyTorch",
-            "Sklearn",
-            "Pandas",
-            "Numpy",
-            "React",
-            "Django",
-            "Node.js",
-            "Docker",
-            "Git",
-            "MLOps",
-            "Computer Vision",
-            "NLP",
-            "Data Analysis",
-            "Testing (Pytest)",
-            "TypeScript",
-          ].map((skill) => (
-            <li
-              key={skill}
-              className="bg-blue-100 dark:bg-blue-800 px-3 py-1 rounded"
-            >
-              {skill}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-5 flex items-center gap-2">
-          <span className="text-3xl">🎓</span>
-          <span>Education</span>
-        </h2>
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Master's */}
-          <div className="flex-1 bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="inline-block bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-200 px-2 py-1 rounded text-xs font-semibold">
-                2020 – 2023
-              </span>
-              <span className="font-semibold text-lg">TUM</span>
+          {/* Gradient panels stand in for photographs. To use real images,
+              swap each for a next/image with an explicit `sizes` — the portrait
+              renders at ~340px and the two squares at ~163px. */}
+          <div className="flex min-w-[16.25rem] flex-[0_1_21.25rem] flex-col gap-3.5">
+            <div className="overflow-hidden rounded-2xl border border-line-subtle bg-surface">
+              <div className="aspect-4/5 bg-[image:var(--gradient-diagonal)]" />
+              <p className="mono-label p-4.5 text-[12px] tracking-[0.06em] text-ink-muted">
+                Aman Kumar · Berlin
+              </p>
             </div>
-            <div className="mb-1 text-base font-medium text-gray-800 dark:text-gray-100">
-              M.Sc. Computational Science and Engineering
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Specialized in Machine Learning & Deep Learning for graphics,
-              sequences, and crowd modeling.
-            </div>
-          </div>
-          {/* Bachelor's */}
-          <div className="flex-1 bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="inline-block bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-200 px-2 py-1 rounded text-xs font-semibold">
-                2014 – 2018
-              </span>
-              <span className="font-semibold text-lg">IIT (BHU)</span>
-            </div>
-            <div className="mb-1 text-base font-medium text-gray-800 dark:text-gray-100">
-              B.Tech. Mechanical Engineering
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Where I first fell in love with optimization and probability.
+            <div className="grid grid-cols-2 gap-3.5">
+              <div className="aspect-square rounded-xl border border-line-subtle bg-[image:var(--gradient-primary)]" />
+              <div className="aspect-square rounded-xl border border-line-subtle bg-[image:var(--gradient-deep)]" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-3">🎉 Fun Facts</h2>
-        <ul className="list-disc list-inside text-lg space-y-2">
-          <li>I prefer tabs over spaces (it’s not even close 😎)</li>
-          <li>Dark mode is my default lifestyle</li>
-          <li>
-            Big fan of teaching — I once ran science fairs for kids in Varanasi
-            🔬
-          </li>
-        </ul>
-      </section> */}
+      <section className="bg-surface pt-20 pb-8">
+        <div className="shell">
+          <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
+            Experience
+          </p>
+          <div className="border-t border-line">
+            {experience.map(({ period, org, role, points }) => (
+              <div
+                key={org}
+                className="flex flex-wrap gap-x-10 gap-y-4 border-b border-line-subtle py-8"
+              >
+                <p className="mono-label flex-[0_1_9rem] pt-1.5 text-[12px] tracking-[0.08em] text-ink-faint">
+                  {period}
+                </p>
+                <div className="min-w-0 flex-[1_1_20rem]">
+                  <h2 className="m-0 text-2xl font-normal tracking-[-0.012em]">
+                    {org}
+                  </h2>
+                  <p className="mono-label mt-2 text-[12px] tracking-[0.08em] text-action">
+                    {role}
+                  </p>
+                  <ul className="mt-4 flex max-w-[64ch] flex-col gap-2.5">
+                    {points.map((point) => (
+                      <li
+                        key={point}
+                        className="flex gap-3.5 text-base leading-relaxed font-light text-ink-muted text-pretty"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-accent"
+                        />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <section className="text-center mt-12">
-        <p className="text-xl">
-          Curious about what I’ve built? <br />
+      <section className="bg-surface pt-12 pb-8">
+        <div className="shell">
+          <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
+            Education
+          </p>
+          <div className="border-t border-line">
+            {education.map(({ period, org, qualification, note }) => (
+              <div
+                key={org}
+                className="flex flex-wrap gap-x-10 gap-y-4 border-b border-line-subtle py-8"
+              >
+                <p className="mono-label flex-[0_1_9rem] pt-1.5 text-[12px] tracking-[0.08em] text-ink-faint">
+                  {period}
+                </p>
+                <div className="min-w-0 flex-[1_1_20rem]">
+                  <h2 className="m-0 text-2xl font-normal tracking-[-0.012em]">
+                    {org}
+                  </h2>
+                  <p className="mt-2 text-base font-light">{qualification}</p>
+                  <p className="mt-2 max-w-[60ch] text-base leading-relaxed font-light text-ink-muted text-pretty">
+                    {note}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-surface pt-12 pb-24">
+        <div className="shell">
+          <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
+            Skills &amp; tools
+          </p>
+          <ul className="flex flex-wrap gap-1.5">
+            {skills.map((skill) => (
+              <li
+                key={skill}
+                className="mono-label rounded border border-line-subtle bg-surface-subtle px-2.5 py-1.5 text-[11px] tracking-[0.05em] text-ink-muted"
+              >
+                {skill}
+              </li>
+            ))}
+          </ul>
+
           <Link
             href="/projects"
-            className="text-purple-600 hover:underline dark:text-purple-400"
+            className="mono-label mt-10 inline-block border-b border-line pb-1 text-[12px] tracking-[0.08em] transition-colors hover:text-action"
           >
-            Check out my projects →
+            See the work →
           </Link>
-        </p>
+        </div>
       </section>
     </div>
   );

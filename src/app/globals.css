@@ -4,32 +4,143 @@
    dark variant is declared here. ThemeContext toggles `.dark` on <html>. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Hide the scrollbar on scroll-snap sliders that supply their own arrow controls. */
-@utility no-scrollbar {
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+/* ---------------------------------------------------------------------------
+   Palette
+
+   The design has two kinds of surface and they behave differently:
+
+   1. FIXED — `abyss`, `deep`, `teal`, `accent`. The hero, the project header,
+      the contact panel and the footer are dark in every theme, by design. Their
+      values never change, so text on them can safely be hardcoded white.
+   2. ADAPTIVE — `surface`, `ink`, `line`, `action`. These are the sections the
+      design draws on white (work index, blog, project body). They flip under
+      `.dark`.
+
+   Keeping the two families separate is what lets a dark section sit next to an
+   adaptive one without either having to know the current theme. Do not give a
+   fixed token a `.dark` override — the hero would then match the section below
+   it and the boundary between them would disappear.
+
+   Sourced from the Evologics design system referenced by the design canvas.
+   That system is not vendored here, so these are the resolved values rather
+   than an import.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Fixed — dark sections, identical in both themes. */
+  --abyss: #000d19;
+  --deep: #061726;
+  --teal: #004144;
+  --accent: #82cfff;
+  --accent-soft: #b4e1ff;
+
+  /* Adaptive — light theme. */
+  --surface: #ffffff;
+  --surface-subtle: #f4f7fa;
+  --ink: #061726;
+  --ink-muted: #4a5a6a;
+  --ink-faint: #6b7c8c;
+  --line: #dae2e8;
+  --line-subtle: #eaeff3;
+  /* Not the accent: #82CFFF on white is ~1.5:1 and unreadable. The dark
+     sections get the light accent, adaptive sections get this. */
+  --action: #0b6c9b;
+  --action-hover: #08557a;
+
+  /* Fixed, like the dark surfaces they are built from. Used for the image
+     panels on /about until real photographs replace them. */
+  --gradient-diagonal: linear-gradient(135deg, #061726 0%, #004144 100%);
+  --gradient-primary: linear-gradient(140deg, #004144 0%, #82cfff 160%);
+  --gradient-deep: linear-gradient(140deg, #000d19 0%, #0b6c9b 150%);
+  --gradient-radial: radial-gradient(
+    circle at 28% 18%,
+    rgba(0, 65, 68, 0.85) 0%,
+    rgba(0, 65, 68, 0) 62%
+  );
 }
 
-/* Wire the Geist fonts loaded in layout.tsx into `font-sans` / `font-mono`. */
+.dark {
+  /* All four stay darker than --deep (#061726) except `surface-subtle`, so the
+     always-dark hero still reads as a distinct band against the page. */
+  --surface: #05121e;
+  --surface-subtle: #081b2b;
+  --ink: #ffffff;
+  --ink-muted: rgba(255, 255, 255, 0.68);
+  --ink-faint: rgba(255, 255, 255, 0.48);
+  --line: rgba(255, 255, 255, 0.16);
+  --line-subtle: rgba(255, 255, 255, 0.09);
+  --action: #82cfff;
+  --action-hover: #b4e1ff;
+}
+
+/* `inline` is load-bearing: it makes each utility emit `var(--surface)` rather
+   than the resolved value, which is what lets `.dark` re-point the token at
+   runtime. Without it every colour would be frozen at build time and the
+   toggle would do nothing. */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-abyss: var(--abyss);
+  --color-deep: var(--deep);
+  --color-teal: var(--teal);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-subtle: var(--line-subtle);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+}
+
+/* The design's page gutter. Every section is full-bleed so its background
+   reaches the viewport edge; the content inside is held to this width. */
+@utility shell {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.5rem;
+}
+
+/* The recurring monospace eyebrow — section kickers, meta rows, nav, stat
+   labels. Size is left to a utility class because the design uses 11px, 12px
+   and 13px in different places. */
+@utility mono-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 html {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-html.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  background: var(--surface);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface);
+  color: var(--ink);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  /* The hero canvas and a few grids are sized in vw; without this a scrollbar
+     on a narrow viewport produces a horizontal one too. */
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--deep);
+}
+
+/* Sections animate in on the home page. Anyone who has asked their OS not to
+   animate gets the end state immediately. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

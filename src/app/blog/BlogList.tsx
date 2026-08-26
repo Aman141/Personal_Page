@@ -1,11 +1,13 @@
-import ContentCard from "@/components/ContentCard";
+import PostRow from "@/components/PostRow";
 import type { BlogPost } from "@/lib/medium";
 
 // No "use client": posts are fetched on the server and passed in, so titles and
 // summaries land in the HTML for crawlers rather than appearing after hydration.
-
-/** Single column at max-w-3xl, so the card fills the container on wide screens. */
-const IMAGE_SIZES = "(max-width: 768px) 100vw, 768px";
+//
+// The design lists posts as text rows with no thumbnail, so `post.thumbnail` is
+// no longer read here. `safeThumbnail` in lib/medium.ts still filters and
+// returns it — kept because it costs nothing and the field is the only thing
+// that would need re-plumbing if images come back.
 
 export default function BlogList({
   posts,
@@ -15,33 +17,29 @@ export default function BlogList({
   error: string | null;
 }) {
   if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
+    return (
+      <p className="border-t border-line py-8 text-base font-light text-ink-muted">
+        {error}
+      </p>
+    );
   }
 
   if (posts.length === 0) {
-    return <div className="text-center text-gray-500">No blog posts found.</div>;
+    return (
+      <p className="border-t border-line py-8 text-base font-light text-ink-muted">
+        No posts yet.
+      </p>
+    );
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div>
       {posts.map((post) => (
-        <ContentCard
-          key={post.id}
-          item={{
-            title: post.title,
-            description: post.summary,
-            tags: post.tags,
-            meta: post.date,
-          }}
-          variant="post"
-          href={post.link}
-          image={
-            post.thumbnail
-              ? { src: post.thumbnail, sizes: IMAGE_SIZES }
-              : undefined
-          }
-        />
+        <PostRow key={post.id} post={post} showExcerpt />
       ))}
+      {/* Closes the last row: every row draws its own top rule, so without
+          this the list ends on an open edge. */}
+      <div className="border-t border-line" />
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 
-// Isolated as its own client component so the channel list around it stays
+// Isolated as its own client component so the panel around it stays
 // server-rendered — the email address and social links belong in the HTML.
 
 export default function CopyEmailButton({ value }: { value: string }) {
@@ -19,8 +19,9 @@ export default function CopyEmailButton({ value }: { value: string }) {
     <button
       type="button"
       onClick={async (event) => {
-        // The row behind this button is a mailto link; without this a copy
-        // click would also open the visitor's mail client.
+        // This now sits beside the mailto link rather than on top of it, so
+        // the guard is belt-and-braces — but it is what stops a copy click
+        // from also opening the mail client if it is ever nested again.
         event.preventDefault();
         event.stopPropagation();
         try {
@@ -31,10 +32,10 @@ export default function CopyEmailButton({ value }: { value: string }) {
         }
       }}
       aria-label={copied ? "Email address copied" : "Copy email address"}
-      className="relative z-10 shrink-0 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-purple-600 dark:hover:bg-gray-800 dark:hover:text-purple-400"
+      className="relative z-10 shrink-0 rounded-full border border-white/22 p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
     >
       {copied ? (
-        <Check className="h-4 w-4 text-emerald-500" />
+        <Check className="h-4 w-4 text-accent" />
       ) : (
         <Copy className="h-4 w-4" />
       )}

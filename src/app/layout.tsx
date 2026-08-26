@@ -84,17 +84,20 @@ export default function RootLayout({
               focused. */}
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-deep"
           >
             Skip to content
           </a>
           <div className="min-h-screen flex flex-col">
             <Header />
-            <main id="main-content" className="flex-grow px-6 sm:px-12">
+            {/* No padding here. Every section in the design paints its own
+                background edge to edge and holds its content with `.shell`,
+                so a gutter on <main> would show as a stripe of page
+                background down both sides of the dark bands. */}
+            <main id="main-content" className="flex-grow">
               {children}
             </main>
             <Footer
-              email={site.email}
               githubUrl={site.social.github}
               linkedinUrl={site.social.linkedin}
               twitterUrl={site.social.twitter}

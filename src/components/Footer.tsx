@@ -1,9 +1,7 @@
-"use client";
-
-import { Mail, Github, Linkedin, Twitter, Instagram } from "lucide-react";
+// Not a client component: there is no state or handler here, and rendering on
+// the server keeps the links in the HTML for crawlers.
 
 interface FooterProps {
-  email: string;
   githubUrl: string;
   linkedinUrl: string;
   twitterUrl: string;
@@ -11,63 +9,41 @@ interface FooterProps {
 }
 
 export default function Footer({
-  email,
   githubUrl,
   linkedinUrl,
   twitterUrl,
   instagramUrl,
 }: FooterProps) {
+  const links = [
+    { label: "GitHub", href: githubUrl },
+    { label: "LinkedIn", href: linkedinUrl },
+    { label: "X", href: twitterUrl },
+    { label: "Instagram", href: instagramUrl },
+  ];
+
+  // Evaluated when the page is built, not when it is viewed — these routes are
+  // static. It goes stale on 1 January until the next deploy, which is still
+  // better than a literal that goes stale silently and never self-corrects.
+  const year = new Date().getFullYear();
+
   return (
-    <>
-      <div className="w-full h-px bg-gray-200 dark:bg-gray-700"></div>
-      <footer className="flex flex-col items-center justify-center gap-4 py-10 sm:p-12 mx-4 sm:mx-12">
-        <h3 className="text-lg font-semibold">Contact</h3>
-        <div className="flex gap-8">
+    <footer className="border-t border-white/12 bg-abyss">
+      <div className="shell mono-label flex flex-wrap items-center gap-x-6 gap-y-3 py-6 text-[12px] tracking-[0.08em]">
+        {links.map(({ label, href }) => (
           <a
-            href={`mailto:${email}`}
-            className="hover:underline"
-            aria-label="Email"
-          >
-            <Mail className="w-6 h-6" />
-          </a>
-          <a
-            href={githubUrl}
+            key={label}
+            href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
-            aria-label="GitHub"
+            className="text-white/60 transition-colors hover:text-accent"
           >
-            <Github className="w-6 h-6" />
+            {label}
           </a>
-          <a
-            href={linkedinUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-            aria-label="LinkedIn"
-          >
-            <Linkedin className="w-6 h-6" />
-          </a>
-          <a
-            href={twitterUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-            aria-label="Twitter"
-          >
-            <Twitter className="w-6 h-6" />
-          </a>
-          <a
-            href={instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline"
-            aria-label="Instagram"
-          >
-            <Instagram className="w-6 h-6" />
-          </a>
-        </div>
-      </footer>
-    </>
+        ))}
+        <span className="text-white/35 sm:ml-auto">
+          © {year} Aman Kumar · Berlin
+        </span>
+      </div>
+    </footer>
   );
 }

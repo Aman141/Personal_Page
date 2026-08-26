@@ -1,4 +1,4 @@
-// Single source of truth for project content: the home-page slider, /projects,
+// Single source of truth for project content: the home-page grid, /projects,
 // the /projects/[slug] detail pages and the sitemap all read from here.
 //
 // Everything below is drawn from the linked source. Two rules, because this is
@@ -18,14 +18,32 @@ export interface ProjectDetail {
   results?: { label: string; value: string }[];
   /** Required whenever `results` is set. See rule 2 above. */
   limitations?: string[];
+  /**
+   * Three at-a-glance facts for the strip under the project header. Where a
+   * project reports `results`, keep these to non-metric facts or repeat the
+   * headline figure verbatim — rule 1 applies here too.
+   */
+  stats?: { label: string; value: string }[];
   stack: string[];
 }
+
+/** Facets behind the filter chips on /projects. */
+export type ProjectDomain = "ml" | "signals" | "web";
 
 export interface Project {
   slug: string;
   title: string;
   /** Card-length summary. Cards clamp to three lines, so keep it under ~180 chars. */
   description: string;
+  /**
+   * One-line version for the home-page grid, where three cards share a row and
+   * `description` is too long to sit without clamping. Keep under ~100 chars.
+   */
+  short: string;
+  /** Category shown beside the project number, e.g. "Research", "Tool". */
+  kind: string;
+  /** Which filter chips on /projects this project answers to. */
+  domains: ProjectDomain[];
   tags: string[];
   repoUrl: string;
   /** Live deployment, when one exists. */
@@ -40,10 +58,14 @@ export const projects: Project[] = [
     title: "AirConnect",
     description:
       "Web app for browsing commercial aircraft and airline fleet specifications, with filtering by manufacturer and category plus per-aircraft detail pages.",
+    short:
+      "Browse commercial aircraft and airline fleet specs, filtered by manufacturer and category.",
+    kind: "Web app",
+    domains: ["web"],
     tags: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS"],
     repoUrl: "https://github.com/Aman141/AirConnect",
     demoUrl: "https://air-connect.vercel.app",
-    featured: true,
+    featured: false,
     detail: {
       overview:
         "A browsable reference for commercial aircraft and airline fleet data — specifications that are otherwise scattered across manufacturer documents and wiki tables. Aircraft are stored as typed local JSON rather than fetched at runtime, so pages render instantly and the data shape is checked at build time.",
@@ -52,6 +74,11 @@ export const projects: Project[] = [
         "Per-aircraft detail pages covering dimensions, range, engine types and seating configuration",
         "Filtering by manufacturer and category, plus search by name",
         "Responsive layout that holds up on a phone",
+      ],
+      stats: [
+        { label: "Framework", value: "Next.js 15" },
+        { label: "Routes", value: "Per-aircraft" },
+        { label: "Status", value: "Live" },
       ],
       stack: [
         "Next.js 15 (App Router)",
@@ -67,6 +94,10 @@ export const projects: Project[] = [
     title: "RAGdemo",
     description:
       "Retrieval-augmented generation built from the parts up: PDF ingestion, local embeddings, raw FAISS retrieval and grounded answers, with no orchestration framework in between.",
+    short:
+      "Retrieval-augmented generation built from the parts up — no orchestration framework in between.",
+    kind: "Retrieval",
+    domains: ["ml"],
     tags: ["Python", "RAG", "FAISS", "OpenAI", "FastAPI"],
     repoUrl: "https://github.com/Aman141/RAGdemo",
     featured: true,
@@ -93,6 +124,11 @@ export const projects: Project[] = [
         "Retrieval is unconditional. Context is always fetched and stuffed; the model never decides whether it needs to search.",
         "A partial index can be written silently — embedding stops at the first error and returns what it has, and the caller indexes that subset without warning.",
       ],
+      stats: [
+        { label: "Index", value: "FAISS" },
+        { label: "Embeddings", value: "Local" },
+        { label: "Framework", value: "None" },
+      ],
       stack: [
         "Python 3.13",
         "FAISS",
@@ -109,6 +145,10 @@ export const projects: Project[] = [
     title: "EEG Multiple Sclerosis Classification",
     description:
       "Three CNN architectures compared for classifying nine-channel EEG epochs as multiple-sclerosis patient or healthy control. Shallow ConvNet led at 88.4% ± 2.4% under 5-fold cross-validation.",
+    short:
+      "Three CNN architectures compared on nine-channel EEG epochs; Shallow ConvNet led at 88.4%.",
+    kind: "Research",
+    domains: ["ml", "signals"],
     tags: ["TensorFlow/Keras", "CNN", "Signal Processing", "EEG"],
     repoUrl: "https://github.com/Aman141/ML_Projects/blob/master/EEG.ipynb",
     featured: true,
@@ -130,13 +170,12 @@ export const projects: Project[] = [
         "EEGNet's validation loss diverged during training, so its figure reflects an unstable fit rather than a fair architectural comparison.",
         "The provenance of the EEG recordings is not credited in the notebook.",
       ],
-      stack: [
-        "Python",
-        "TensorFlow / Keras",
-        "scikit-learn",
-        "SciPy",
-        "NumPy",
+      stats: [
+        { label: "Accuracy", value: "88.4% ± 2.4%" },
+        { label: "Validation", value: "5-fold CV" },
+        { label: "Channels", value: "9" },
       ],
+      stack: ["Python", "TensorFlow / Keras", "scikit-learn", "SciPy", "NumPy"],
     },
   },
   {
@@ -144,6 +183,10 @@ export const projects: Project[] = [
     title: "Bayesian Media Mix Model",
     description:
       "Estimates the revenue contribution of seven ad-spend channels across 104 weeks in PyMC3, with geometric adstock carryover implemented as a custom Theano scan recursion.",
+    short:
+      "Revenue contribution of seven ad channels over 104 weeks, with adstock carryover in PyMC3.",
+    kind: "Inference",
+    domains: ["ml"],
     tags: ["PyMC3", "Bayesian Inference", "MCMC", "Prophet", "Time Series"],
     repoUrl:
       "https://github.com/Aman141/ML_Projects/blob/master/Bayesian_MMM.ipynb",
@@ -165,6 +208,11 @@ export const projects: Project[] = [
         "Both figures are in-sample: the model was fitted and evaluated on the same 104 weeks with no holdout. They describe goodness of fit, not predictive accuracy.",
         "Carryover is modelled but saturation is not — there is no Hill curve or ROI decomposition, so the model does not capture diminishing returns on spend.",
       ],
+      stats: [
+        { label: "Channels", value: "7" },
+        { label: "Weeks", value: "104" },
+        { label: "Sampler", value: "NUTS" },
+      ],
       stack: ["Python", "PyMC3", "Theano", "Prophet", "ArviZ", "pandas"],
     },
   },
@@ -173,10 +221,14 @@ export const projects: Project[] = [
     title: "Speech Emotion Recognition",
     description:
       "Audio classification pipeline on the RAVDESS corpus: MFCC features extracted with librosa feed a 1D convolutional network across five emotional states, with noise and pitch-shift augmentation.",
+    short:
+      "MFCC features from the RAVDESS corpus into a 1D convolutional network across five emotions.",
+    kind: "Audio ML",
+    domains: ["ml", "signals"],
     tags: ["librosa", "Audio ML", "MFCC", "1D CNN", "TensorFlow"],
     repoUrl:
       "https://github.com/Aman141/ML_Projects/blob/master/Sentiment%20Predictor%20for%20Stress%20Detection.ipynb",
-    featured: true,
+    featured: false,
     detail: {
       overview:
         "Speech carries emotional state in spectral texture rather than in words. This builds an end-to-end audio classification pipeline on the RAVDESS corpus — feature extraction, augmentation, and a convolutional network over MFCC features.",
@@ -194,6 +246,11 @@ export const projects: Project[] = [
         "The notebook also reports a 94% figure — that one is in-sample, computed over the same clips used for training, and should not be read as performance.",
         "A clean subject-level holdout (two held-back actors) was prepared but never evaluated. That would be the honest test.",
       ],
+      stats: [
+        { label: "Corpus", value: "RAVDESS" },
+        { label: "Classes", value: "5" },
+        { label: "Features", value: "MFCC" },
+      ],
       stack: [
         "Python",
         "librosa",
@@ -208,9 +265,13 @@ export const projects: Project[] = [
     title: "DeutschCard",
     description:
       "Browser-based German vocabulary flashcards with study and browse modes, CEFR A1–B2 filtering, and progress tracking. No build step and no backend — plain JavaScript and localStorage.",
+    short:
+      "German vocabulary flashcards with CEFR filtering and progress tracking. No build step, no backend.",
+    kind: "Tool",
+    domains: ["web"],
     tags: ["JavaScript", "HTML/CSS", "localStorage"],
     repoUrl: "https://github.com/Aman141/DeutschCard",
-    featured: true,
+    featured: false,
     detail: {
       overview:
         "A vocabulary trainer that runs entirely in the browser — no build step, no backend, no dependencies. Opening the HTML file is the whole install, and everything persists to localStorage so it works offline.",
@@ -222,16 +283,33 @@ export const projects: Project[] = [
         "Colour coding for der / die / das, which is the part of German vocabulary that actually needs drilling",
         "50 seed words pre-loaded on first launch",
       ],
+      stats: [
+        { label: "Levels", value: "A1–B2" },
+        { label: "Backend", value: "None" },
+        { label: "Build step", value: "None" },
+      ],
       stack: ["Vanilla JavaScript", "HTML", "CSS", "localStorage"],
     },
   },
 ];
 
+/**
+ * The home page devotes a full-width row of three to these and titles the
+ * section "Three projects worth ten minutes of your time." Flipping a fourth
+ * to `featured` wraps the grid and makes the heading a lie — retire one first.
+ */
 export const featuredProjects = projects.filter((p) => p.featured);
+
+/**
+ * "01"–"06", used as the index number beside each title. Derived from array
+ * order rather than stored, so reordering `projects` cannot leave two entries
+ * sharing a number.
+ */
+export const projectNumber = (slug: string) =>
+  String(projects.findIndex((p) => p.slug === slug) + 1).padStart(2, "0");
 
 export const getProject = (slug: string) =>
   projects.find((p) => p.slug === slug);
 
 /** Cards link to the detail page; the demo and source live there as buttons. */
-export const projectHref = (p: Pick<Project, "slug">) =>
-  `/projects/${p.slug}`;
+export const projectHref = (p: Pick<Project, "slug">) => `/projects/${p.slug}`;

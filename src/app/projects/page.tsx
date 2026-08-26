@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import ContentCard from "@/components/ContentCard";
-import { projects, projectHref } from "@/data/projects";
+import WorkIndex from "./WorkIndex";
+import { projects } from "@/data/projects";
 
 const description =
   "Machine learning, signal processing, and web projects by Aman Kumar.";
@@ -12,47 +12,32 @@ export const metadata: Metadata = {
   openGraph: { title: "Projects", description, url: "/projects" },
 };
 
+// The heading counts the projects out loud. Derived rather than written as a
+// literal, so adding a seventh entry to projects.ts cannot leave the page
+// claiming six. Falls back to the digit past twelve.
+// prettier-ignore
+const NUMBER_WORDS = [
+  "Zero", "One", "Two", "Three", "Four", "Five", "Six",
+  "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve",
+];
+const spell = (n: number) => NUMBER_WORDS[n] ?? String(n);
+
 export default function ProjectsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <header className="mb-10">
-        <h1 className="text-4xl font-bold">Projects</h1>
-        <p className="mt-3 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-          A mix of machine learning and signal-processing work alongside a few
-          things I have built for the web. Each one has a write-up covering the
-          approach, results and limitations — with links to the live demo and
-          the source.
-        </p>
-      </header>
-
-      {/* Two columns rather than the home page's three: this page has the width
-          to give each description room instead of clamping it. */}
-      <div className="grid gap-6 sm:grid-cols-2">
-        {projects.map((project) => (
-          <ContentCard
-            key={project.slug}
-            item={project}
-            variant="project"
-            href={projectHref(project)}
-            // Source stays on the card even though the detail page also links
-            // it — engineers reading a portfolio want the code without a hop.
-            secondary={{ href: project.repoUrl, label: "Source" }}
-          />
-        ))}
+    <div className="min-h-[80vh] bg-surface pt-21 pb-15">
+      <div className="shell">
+        <WorkIndex projects={projects}>
+          <div>
+            <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
+              Work index
+            </p>
+            <h1 className="m-0 max-w-[24ch] text-[clamp(1.875rem,3.6vw,3rem)] leading-[1.06] font-light tracking-[-0.018em]">
+              {spell(projects.length)} projects, from raw signal to shipped
+              interface.
+            </h1>
+          </div>
+        </WorkIndex>
       </div>
-
-      <p className="mt-10 text-sm text-gray-500 dark:text-gray-400">
-        More on{" "}
-        <a
-          href="https://github.com/Aman141"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-purple-600 hover:underline dark:text-purple-400"
-        >
-          GitHub
-        </a>
-        .
-      </p>
     </div>
   );
 }

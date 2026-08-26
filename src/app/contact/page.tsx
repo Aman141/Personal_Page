@@ -1,12 +1,4 @@
 import type { Metadata } from "next";
-import {
-  ArrowUpRight,
-  Github,
-  Linkedin,
-  Mail,
-  MapPin,
-  PenLine,
-} from "lucide-react";
 import { availability, site } from "@/data/site";
 import ContactForm from "./ContactForm";
 import CopyEmailButton from "./CopyEmailButton";
@@ -21,135 +13,111 @@ export const metadata: Metadata = {
   openGraph: { title: "Contact", description, url: "/contact" },
 };
 
-const channels = [
-  {
-    label: "LinkedIn",
-    handle: "aman-aks-007",
-    href: site.social.linkedin,
-    Icon: Linkedin,
-    gradient: "from-sky-500 to-blue-600",
-  },
-  {
-    label: "GitHub",
-    handle: "Aman141",
-    href: site.social.github,
-    Icon: Github,
-    gradient: "from-gray-600 to-gray-800",
-  },
-  {
-    label: "Medium",
-    handle: "@aman-ai",
-    href: site.social.medium,
-    Icon: PenLine,
-    gradient: "from-emerald-500 to-teal-600",
-  },
+const socials = [
+  { label: "Email", handle: site.email, href: `mailto:${site.email}` },
+  { label: "GitHub", handle: "Aman141", href: site.social.github },
+  { label: "LinkedIn", handle: "aman-aks-007", href: site.social.linkedin },
+  { label: "Medium", handle: "@aman-ai", href: site.social.medium },
 ];
 
 export default function ContactPage() {
   // Read server-side so the form is never rendered when it cannot send.
   // Showing a dead form would silently lose messages — the one outcome this
-  // page must not have.
+  // page must not have. The API route re-checks the same variable, because
+  // build-time and runtime config can differ.
   const formEnabled = Boolean(process.env.RESEND_API_KEY);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
-      <header>
-        {availability && (
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
-            {availability}
+    <section className="relative min-h-[80vh] overflow-hidden bg-abyss pt-25 pb-20">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[image:var(--gradient-radial)] opacity-45"
+      />
+
+      <div className="shell relative flex flex-wrap items-start gap-x-16 gap-y-14">
+        <div className="min-w-0 flex-[1_1_26rem]">
+          {availability && (
+            <p className="mono-label mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 px-3 py-1.5 text-[11px] tracking-[0.12em] text-accent">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+              </span>
+              {availability}
+            </p>
+          )}
+
+          <p className="mono-label mb-6 text-[12px] tracking-[0.16em] text-accent">
+            Contact
           </p>
-        )}
+          <h1 className="m-0 mb-8 max-w-[22ch] text-[clamp(1.875rem,4.2vw,3.625rem)] leading-[1.05] font-light tracking-[-0.02em] text-white">
+            Happy to talk about signals, models or Berlin.
+          </h1>
+          <p className="mb-11 max-w-[52ch] text-lg leading-relaxed font-light text-white/70">
+            Open to AI and ML engineering roles, and to any question about the
+            work in the index. Email is fastest.
+          </p>
 
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Let&apos;s talk
-        </h1>
-        <p className="mt-3 max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-400">
-          Whether it&apos;s a role, a collaboration, or a question about
-          something I&apos;ve built — I read everything that lands here.
-        </p>
-      </header>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={`mailto:${site.email}`}
+              className="border-b border-accent/40 pb-1.5 text-[clamp(1.25rem,2.6vw,2.125rem)] font-light break-all text-accent transition-colors hover:text-white"
+            >
+              {site.email}
+            </a>
+            <CopyEmailButton value={site.email} />
+          </div>
 
-      {/* 3/2 split rather than even halves: the form is the primary action and
-          needs the room; the channel rail reads fine narrow. */}
-      <div className="mt-10 grid gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-3">
+          <ul className="mt-14 grid grid-cols-[repeat(auto-fit,minmax(11.25rem,1fr))] gap-px overflow-hidden rounded-2xl border border-white/12 bg-white/12">
+            {socials.map(({ label, handle, href }) => (
+              // The cell carries the background so the 1px grid gaps read as
+              // separators; the anchor fills it so the whole cell is the
+              // hit area.
+              <li
+                key={label}
+                className="bg-abyss/85 transition-colors hover:bg-teal/50"
+              >
+                <a
+                  href={href}
+                  {...(href.startsWith("mailto:")
+                    ? {}
+                    : { target: "_blank", rel: "noopener noreferrer" })}
+                  className="flex h-full flex-col gap-2 p-6 text-white"
+                >
+                  <span className="mono-label text-[11px] tracking-[0.14em] text-white/45">
+                    {label}
+                  </span>
+                  <span className="text-base font-light break-all">
+                    {handle}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="min-w-[17rem] flex-[1_1_23rem]">
           {formEnabled ? (
             <ContactForm email={site.email} />
           ) : (
-            <div className="flex h-full flex-col justify-center rounded-xl border border-dashed border-gray-300 bg-white p-8 dark:border-gray-700 dark:bg-gray-900">
-              <h2 className="text-lg font-semibold">Email is the fastest way</h2>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+            <div className="rounded-[18px] border border-dashed border-white/22 bg-white/6 p-7">
+              <h2 className="m-0 text-lg font-normal text-white">
+                Email is the fastest way
+              </h2>
+              <p className="mt-3 text-[15px] leading-relaxed font-light text-white/65">
                 I&apos;d rather point you somewhere that works than show you a
                 form that quietly drops your message. Drop me a line directly
                 and I&apos;ll pick it up.
               </p>
               <a
                 href={`mailto:${site.email}`}
-                className="mt-6 inline-flex items-center justify-center gap-2 self-start rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                className="mt-6 inline-block rounded-lg bg-accent px-5 py-3 text-[15px] text-deep transition-colors hover:bg-accent-soft"
               >
-                <Mail className="h-4 w-4" />
-                {site.email}
+                Write to me →
               </a>
             </div>
           )}
         </div>
-
-        <aside className="lg:col-span-2">
-          <div className="flex flex-col gap-3">
-            {/* Email sits apart from the social channels: it is the one that
-                reaches a person rather than a profile. */}
-            <div className="group relative flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-purple-700">
-              <a
-                href={`mailto:${site.email}`}
-                aria-label={`Email ${site.email}`}
-                className="absolute inset-0 rounded-xl"
-              />
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 text-white">
-                <Mail className="h-5 w-5" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-sm font-medium">Email</span>
-                <span className="block truncate text-xs text-gray-500 dark:text-gray-400">
-                  {site.email}
-                </span>
-              </span>
-              <CopyEmailButton value={site.email} />
-            </div>
-
-            {channels.map(({ label, handle, href, Icon, gradient }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:hover:border-purple-700"
-              >
-                <span
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br text-white ${gradient}`}
-                >
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium">{label}</span>
-                  <span className="block truncate text-xs text-gray-500 dark:text-gray-400">
-                    {handle}
-                  </span>
-                </span>
-                <ArrowUpRight className="h-4 w-4 shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-purple-500" />
-              </a>
-            ))}
-
-            <p className="mt-2 flex items-center gap-2 px-1 text-xs text-gray-500 dark:text-gray-400">
-              <MapPin className="h-3.5 w-3.5 shrink-0" />
-              Based in {site.location} · {site.timezone}
-            </p>
-          </div>
-        </aside>
       </div>
-    </div>
+    </section>
   );
 }
