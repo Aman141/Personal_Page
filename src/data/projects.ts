@@ -63,6 +63,48 @@ export const projects: Project[] = [
     },
   },
   {
+    slug: "ragdemo",
+    title: "RAGdemo",
+    description:
+      "Retrieval-augmented generation built from the parts up: PDF ingestion, local embeddings, raw FAISS retrieval and grounded answers, with no orchestration framework in between.",
+    tags: ["Python", "RAG", "FAISS", "OpenAI", "FastAPI"],
+    repoUrl: "https://github.com/Aman141/RAGdemo",
+    featured: true,
+    detail: {
+      overview:
+        "A retrieval-augmented generation pipeline assembled from its parts rather than from a framework — PDF in, grounded answer out. LangChain handles text splitting and nothing else: retrieval is raw FAISS, embeddings and generation call the OpenAI SDK directly, and every stage is a module small enough to read in one sitting. The corpus is Marcus Aurelius’ Meditations — 128 pages, 843 chunks.",
+      features: [
+        "Three console scripts covering the pipeline end to end: rag-ingest (PDF to chunks), rag-index (chunks to a FAISS index), rag-ask (question to a grounded answer with page citations)",
+        "A retrieve-only mode that runs everything short of generation and needs no API key at all, since embeddings run locally by default",
+        "A FastAPI web UI that always shows the retrieved chunks, tagging each one as kept or dropped so it is visible which chunks the model actually read rather than merely retrieved",
+        "One-shot and interactive CLI prompts, plus a library API returning the answer, its citations and whether it was grounded",
+      ],
+      approach: [
+        "Pages are stripped of recurring headers and footers and joined into a single document before splitting (600 characters, 100 overlap), so chunks are not severed at page breaks and the overlap window does not reset on every page. Each chunk still records the pages it spans.",
+        "Two embedding backends sit behind one Protocol — all-MiniLM-L6-v2 locally at 384 dimensions by default, or OpenAI when the model name begins text-embedding-. Only the remote path is rate-paced.",
+        "Vectors live in a FAISS IndexFlatIP alongside a JSON sidecar holding one record per index row; loading refuses a pair whose counts or dimensions disagree, and the retriever reads the embedding model name out of the sidecar so a query always lands in the same vector space as the corpus.",
+        "Context assembly walks ranked chunks under a tiktoken budget and returns the subset it actually kept, which is what lets citations name only what the model read.",
+        "The orchestrator distinguishes three outcomes deliberately: a grounded answer, nothing clearing retrieval (no model call at all), or a budget too small for even the top chunk (an error, since that is misconfiguration rather than absence).",
+      ],
+      limitations: [
+        "Generation has never run live — the configured OpenAI account returns insufficient_quota, so the final stage is verified only against a stub client. Every stage before it is exercised against the real corpus.",
+        "The OpenAI embedding backend reaches the API but no full remote index has ever been built, so that path is unproven end to end.",
+        "Single document, no catalog and no conversation memory: every question is standalone.",
+        "Retrieval is unconditional. Context is always fetched and stuffed; the model never decides whether it needs to search.",
+        "A partial index can be written silently — embedding stops at the first error and returns what it has, and the caller indexes that subset without warning.",
+      ],
+      stack: [
+        "Python 3.13",
+        "FAISS",
+        "sentence-transformers",
+        "OpenAI API",
+        "FastAPI",
+        "pypdf",
+        "pytest",
+      ],
+    },
+  },
+  {
     slug: "eeg-ms-classification",
     title: "EEG Multiple Sclerosis Classification",
     description:
