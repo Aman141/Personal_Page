@@ -39,17 +39,18 @@ export default function ContentCard({
   href: string;
   /** Optional second link, e.g. source when `href` points at a live demo. */
   secondary?: { href: string; label: string };
-  /** Lead image. When present it replaces the gradient icon. */
+  /**
+   * Lead image for a `post` card. Post cards reserve the banner slot whether
+   * or not this is set — omitting it renders a placeholder, not a shorter card.
+   */
   image?: ContentCardImage;
 }) {
   const external = isExternal(href);
   const Icon = variant === "project" ? Code2 : FileText;
   const visibleTags = item.tags.slice(0, 3);
   const hiddenTagCount = item.tags.length - visibleTags.length;
-
-  // An image and the icon badge would be redundant, so the image wins. Posts
-  // whose feed entry has no usable thumbnail fall back to the icon.
-  const showIcon = !image;
+  const isPost = variant === "post";
+  const showIcon = !isPost;
   const showHeader = showIcon || Boolean(item.meta);
 
   return (
@@ -95,22 +96,31 @@ export default function ContentCard({
         </div>
       )}
 
-      {image && (
+      {isPost && (
         <div
-          // max-h caps the height on wide cards: 16:9 at the blog list's
-          // ~700px would be a ~390px-tall banner. Narrow slider cards are
-          // already under the cap, so they keep the full 16:9 frame.
+          // limit banner height on wide cards
           className={`relative aspect-video max-h-56 w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 ${
             showHeader ? "mt-3" : ""
           }`}
         >
-          <Image
-            src={image.src}
-            alt={image.alt ?? ""}
-            fill
-            sizes={image.sizes}
-            className="object-cover"
-          />
+          {image ? (
+            <Image
+              src={image.src}
+              alt={image.alt ?? ""}
+              fill
+              sizes={image.sizes}
+              className="object-cover"
+            />
+          ) : (
+            // Reads as a deliberate typographic tile rather than a failed
+            // image: same gradient family as the post icon badge it replaces.
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-sky-500/15 to-emerald-500/15 dark:from-sky-500/25 dark:to-emerald-500/25">
+              <FileText
+                aria-hidden="true"
+                className="h-8 w-8 text-sky-700/40 dark:text-sky-300/40"
+              />
+            </div>
+          )}
         </div>
       )}
 

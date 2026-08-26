@@ -34,6 +34,7 @@ Shared UI goes in `src/components/`; route-local sections live next to their rou
 
 - The whole card is clickable via a **stretched-link overlay** (`absolute inset-0`), not a wrapping anchor, so the optional `secondary` link can sit above it with `z-10`. A wrapping anchor makes that impossible — nested `<a>` is invalid HTML.
 - The `image` prop requires an explicit `sizes`. The same component renders at ~371px in a slider and ~694px in the blog list, so one hardcoded value would mis-fetch on one of them.
+- **`variant="post"` always reserves the banner slot**, rendering a placeholder tile when `image` is absent. Don't "simplify" this back to `image ? banner : iconBadge`: a banner is ~224px and an icon badge is 40px, cards stretch to the tallest in a flex row, and the footer is pinned with `mt-auto` — so a mixed feed left the thumbnail-less card with a ~200px blank gap above its footer. Medium posts whose only body image is the `/_/stat` tracking pixel hit this routinely.
 
 **Layout composition:** `src/app/layout.tsx` owns the single `<main>` element, wrapping `ThemeProvider` → `Header` → `<main>` → `Footer`. **Page components must not render their own `<main>`** — that would nest two, which is invalid HTML and confuses screen readers. Use a `<div>` as the page root. The footer's email and social URLs are props passed from `layout.tsx`, which is the one place personal contact info lives.
 
