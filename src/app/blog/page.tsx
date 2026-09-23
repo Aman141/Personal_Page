@@ -16,14 +16,17 @@ export default async function BlogPage() {
   const { posts, error } = await getMediumPosts();
 
   return (
-    <div className="min-h-[70vh] bg-surface pt-21 pb-25">
+    // Frame matches /projects so the two index pages sit at the same rhythm.
+    <div className="min-h-[80vh] bg-surface pt-21 pb-15">
       <div className="shell">
-        <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
-          Blog
-        </p>
-        <h1 className="m-0 mb-12 max-w-[24ch] text-[clamp(1.875rem,3.6vw,3rem)] leading-[1.06] font-light tracking-[-0.018em]">
-          Notes on the tools I use daily.
-        </h1>
+        <div className="mb-10">
+          <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
+            Writing index
+          </p>
+          <h1 className="m-0 max-w-[24ch] text-[clamp(1.875rem,3.6vw,3rem)] leading-[1.06] font-light tracking-[-0.018em]">
+            Notes on the tools I use daily.
+          </h1>
+        </div>
         <BlogList posts={posts} error={error} />
       </div>
     </div>

@@ -33,13 +33,13 @@ export default function BlogList({
   }
 
   return (
-    <div>
+    // The rule belongs to the container, matching the work index: rows carry
+    // their own bottom rule, so the list opens on a stronger line and closes
+    // itself without a trailing spacer element.
+    <div className="border-t border-line">
       {posts.map((post) => (
-        <PostRow key={post.id} post={post} showExcerpt />
+        <PostRow key={post.id} post={post} detailed />
       ))}
-      {/* Closes the last row: every row draws its own top rule, so without
-          this the list ends on an open edge. */}
-      <div className="border-t border-line" />
     </div>
   );
 }

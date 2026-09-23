@@ -294,9 +294,14 @@ export const projects: Project[] = [
 ];
 
 /**
- * The home page devotes a full-width row of three to these and titles the
- * section "Three projects worth ten minutes of your time." Flipping a fourth
- * to `featured` wraps the grid and makes the heading a lie — retire one first.
+ * Keep this at exactly three. The home grid is
+ * `repeat(auto-fit, minmax(18.75rem, 1fr))` with a 20px gap inside a 1232px
+ * shell, so a fourth column would need 1260px and does not fit — a fourth
+ * featured project wraps to a second row on its own. Retire one first.
+ *
+ * The heading used to state the count out loud ("Three projects worth ten
+ * minutes of your time"), which was the stronger reason; that line is gone, but
+ * the grid arithmetic is not.
  */
 export const featuredProjects = projects.filter((p) => p.featured);
 

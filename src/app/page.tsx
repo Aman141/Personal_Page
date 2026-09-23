@@ -1,5 +1,4 @@
 import Hero from "./components/hero";
-import NowStrip from "./components/now_strip";
 import FeaturedWork from "./components/featured_work";
 import WritingPreview from "./components/writing_preview";
 import { getMediumPosts } from "@/lib/medium";
@@ -13,7 +12,6 @@ export default async function Home() {
   return (
     <div>
       <Hero />
-      <NowStrip />
       <FeaturedWork />
       <WritingPreview posts={posts} error={error} />
     </div>

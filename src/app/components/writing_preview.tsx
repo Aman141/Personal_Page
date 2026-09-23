@@ -5,6 +5,20 @@ import type { BlogPost } from "@/lib/medium";
 /** A preview, not the archive — /blog carries the full feed. */
 const PREVIEW_COUNT = 3;
 
+/**
+ * Structurally a copy of `FeaturedWork`: a label row with the section heading
+ * on the left and the index link on the right, then the content full width.
+ *
+ * It used to be two columns — a narrow rail holding the eyebrow, a display
+ * heading and the link, beside a wider column of rows. That split existed to
+ * give the heading somewhere to sit. With the heading gone the rail had nothing
+ * left in it but two mono labels and roughly 430px of empty space, so the
+ * section now reads the same way as the one above it.
+ *
+ * Widening the rows is the point rather than a side effect: at the old column
+ * width the longer titles wrapped to two lines, and the home page's compact
+ * `PostRow` has no summary underneath to balance that against.
+ */
 export default function WritingPreview({
   posts,
   error,
@@ -14,26 +28,30 @@ export default function WritingPreview({
 }) {
   return (
     <section className="bg-surface pt-22 pb-28">
-      <div className="shell flex flex-wrap items-start gap-x-16 gap-y-10">
-        <div className="min-w-0 flex-[1_1_17.5rem]">
-          <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
+      <div className="shell">
+        {/* As in FeaturedWork, the eyebrow is the real `h2` — the post titles
+            below are `h3`, and nothing else here would carry the level. */}
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+          <h2 className="mono-label m-0 text-[12px] font-normal tracking-[0.14em] text-ink-muted">
             Writing
-          </p>
-          <h2 className="m-0 text-[clamp(1.625rem,2.8vw,2.375rem)] leading-[1.1] font-light tracking-[-0.015em]">
-            Notes on the tools I use daily.
           </h2>
+
           <Link
             href="/blog"
-            className="mono-label mt-5.5 inline-block border-b border-line pb-1 text-[12px] tracking-[0.08em] transition-colors hover:text-action"
+            className="mono-label border-b border-line pb-1 text-[12px] tracking-[0.08em] transition-colors hover:text-action"
           >
             All posts →
           </Link>
         </div>
 
-        <div className="min-w-0 flex-[2_1_26.25rem]">
-          {/* A feed outage degrades this section rather than the page: the
-              fetch already returns an error instead of throwing, so all that
-              is left is to say so. */}
+        {/* `border-b` closes the list. Each compact row carries its own rule on
+            top and none underneath, which read fine when the rows sat in a
+            narrow column beside a heading; spanning the full shell they need an
+            end, or the last title trails off into the footer's whitespace.
+            A feed outage degrades this section rather than the page: the fetch
+            already returns an error instead of throwing, so all that is left
+            here is to say so. */}
+        <div className="border-b border-line">
           {error ? (
             <p className="border-t border-line py-7 text-base font-light text-ink-muted">
               {error}

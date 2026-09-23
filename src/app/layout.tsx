@@ -30,6 +30,8 @@ export const metadata: Metadata = {
     "Aman Kumar",
     "AI Engineer",
     "Machine Learning",
+    "Computer Vision",
+    "Object Detection",
     "Signal Processing",
     "Underwater Acoustics",
     "Berlin",

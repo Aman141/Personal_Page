@@ -14,8 +14,8 @@
       header, and the RAGdemo demo panel. Their values never change, so text on
       them is safely hardcoded white.
    2. ADAPTIVE — `surface`, `ink`, `line`, `action`, `hero`. Everything else,
-      including the site header, the footer, the 404, and the home hero and the
-      strip under it. They flip under `.dark`.
+      including the site header, the footer, the 404, and the home hero. They
+      flip under `.dark`.
 
    Chrome is adaptive and feature bands are not, which is the distinction to
    apply when adding a section. Header, footer and 404 were originally fixed
@@ -156,7 +156,12 @@
    labels. Size is left to a utility class because the design uses 11px, 12px
    and 13px in different places. */
 @utility mono-label {
-  font-family: var(--font-mono);
+  /* --font-geist-mono, not --font-mono: the latter is declared in
+     `@theme inline`, and `inline` substitutes theme values into the utilities
+     Tailwind generates instead of emitting the custom property — so
+     `var(--font-mono)` resolves to nothing here and every label silently fell
+     back to Geist Sans. */
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }

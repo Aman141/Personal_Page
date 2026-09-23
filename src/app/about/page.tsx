@@ -3,7 +3,7 @@ import Link from "next/link";
 import { aboutFacts } from "@/data/site";
 
 const description =
-  "AI Engineer at EvoLogics working on underwater acoustic detection and tracking. Previously LLM evaluation at Validaitor. M.Sc. Computational Science and Engineering, TUM.";
+  "AI Engineer at EvoLogics working on detection and tracking in video and audio. Previously LLM evaluation at Validaitor. M.Sc. Computational Science and Engineering, TUM.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -49,11 +49,29 @@ const education = [
   },
 ];
 
+/**
+ * Grouped rather than one flat cloud, reusing the rail anatomy the Experience
+ * and Education rows already use on this page.
+ *
+ * The flat version listed `Computer Vision` beside `NumPy` — a whole domain and
+ * a dependency, same chip, same weight — and named none of the four things the
+ * intro now claims. Four entries went because they cost a line and signal
+ * nothing: `Pandas`, `NumPy`, `Sklearn` and `Pytest` are all implied by
+ * `Python`. Two more went for being broad enough to be true of almost anyone:
+ * `NLP` (RAG / retrieval is the honest version) and `Data Analysis`.
+ * `Computer Vision` is covered by the four specifics under Vision.
+ *
+ * Everything here is either backed by a project in `src/data/projects.ts`, by
+ * the experience list above, or named directly by the intro. Don't add a chip
+ * that isn't — a skills list is the cheapest place on a portfolio to overclaim
+ * and the easiest for an interviewer to probe.
+ */
 // prettier-ignore
-const skills = [
-  "Python", "C++", "SQL", "TensorFlow", "PyTorch", "Sklearn", "Pandas",
-  "NumPy", "React", "Django", "Node.js", "Docker", "Git", "MLOps",
-  "Computer Vision", "NLP", "Data Analysis", "Pytest", "TypeScript",
+const skillGroups = [
+  { label: "Vision",      items: ["YOLO", "Object tracking", "Multi-view triangulation", "Anomaly detection"] },
+  { label: "Audio",       items: ["Classification", "Signature matching", "MFCC", "librosa", "Signal processing"] },
+  { label: "Modelling",   items: ["PyTorch", "TensorFlow", "CNNs", "Bayesian inference", "MCMC", "Time series", "RAG / retrieval"] },
+  { label: "Engineering", items: ["Python", "C++", "SQL", "TypeScript", "FastAPI", "Django", "Node.js", "React", "Docker", "Git", "MLOps"] },
 ];
 
 export default function AboutPage() {
@@ -66,22 +84,29 @@ export default function AboutPage() {
               About
             </p>
             <h1 className="m-0 mb-7 max-w-[40ch] text-[clamp(1.5rem,2.6vw,2.125rem)] leading-[1.36] font-light tracking-[-0.014em] text-pretty">
-              I work on machine learning for underwater acoustics — turning
-              noisy hydrophone data into detections and tracks that hold up in
-              the field.
+              I work on detection and tracking in video and hydrophone audio.
             </h1>
+            {/* Names the capability rather than the employer's domain, matching
+                the hero. Deliberately terse: an earlier draft ran to four
+                paragraphs of balanced "on video it means X, on audio it means
+                Y" prose, which is exactly the register that reads as machine-
+                written. Short clauses, plain verbs, no em-dashes, and the
+                second person's voice left alone in the last two paragraphs. */}
+            <p className="m-0 mb-5 max-w-[64ch] text-[17px] leading-[1.72] font-light text-ink-muted text-pretty">
+              On video that is YOLO for detection, tracking across frames,
+              triangulation for position, and anomaly detection for what does
+              not fit. On audio, classification and signature matching.
+            </p>
             <p className="m-0 mb-5 max-w-[64ch] text-[17px] leading-[1.72] font-light text-ink-muted text-pretty">
               Most of the work is not the model. It is the feature pipeline in
-              front of it, the Bayesian layer where uncertainty actually
-              matters, and the interface behind it so results are usable by
-              people who did not train anything. The projects in the index each
-              isolate one of those pieces.
+              front of it, the Bayesian layer where uncertainty matters, and the
+              interface behind it so results are usable by people who did not
+              train anything.
             </p>
             <p className="m-0 max-w-[64ch] text-[17px] leading-[1.72] font-light text-ink-muted text-pretty">
               Away from the screen: a camera, long routes across Europe, and
-              German somewhere between B1 and fluent. I write up what I learn on
-              Medium, mostly about the tools everyone uses and few people read
-              the manual for.
+              German somewhere between B1 and fluent. I write on Medium, mostly
+              about tools everyone uses and few people read the manual for.
             </p>
 
             <dl className="mt-11 grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-px overflow-hidden rounded-xl border border-line-subtle bg-line-subtle">
@@ -190,16 +215,32 @@ export default function AboutPage() {
           <p className="mono-label mb-3.5 text-[12px] tracking-[0.14em] text-ink-muted">
             Skills &amp; tools
           </p>
-          <ul className="flex flex-wrap gap-1.5">
-            {skills.map((skill) => (
-              <li
-                key={skill}
-                className="mono-label rounded border border-line-subtle bg-surface-subtle px-2.5 py-1.5 text-[11px] tracking-[0.05em] text-ink-muted"
+          <div className="border-t border-line">
+            {skillGroups.map(({ label, items }) => (
+              <div
+                key={label}
+                className="flex flex-wrap gap-x-10 gap-y-4 border-b border-line-subtle py-6"
               >
-                {skill}
-              </li>
+                {/* Same 9rem rail the period columns use in Experience and
+                    Education, so the three lists read as one system. `py-6`
+                    rather than their `py-8` because a row of chips is shorter
+                    than a role with bullets under it. */}
+                <p className="mono-label flex-[0_1_9rem] pt-1.5 text-[12px] tracking-[0.08em] text-ink-faint">
+                  {label}
+                </p>
+                <ul className="flex min-w-0 flex-[1_1_20rem] flex-wrap gap-1.5">
+                  {items.map((item) => (
+                    <li
+                      key={item}
+                      className="mono-label rounded border border-line-subtle bg-surface-subtle px-2.5 py-1.5 text-[11px] tracking-[0.05em] text-ink-muted"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
 
           <Link
             href="/projects"
