@@ -15,65 +15,66 @@ export const contentType = "image/png";
 
 export default function OpengraphImage() {
   return new ImageResponse(
-    (
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        // Literals rather than the CSS tokens: Satori resolves no custom
+        // properties, so globals.css is not in scope here. These are the
+        // --abyss / --teal / --accent values.
+        backgroundColor: "#000d19",
+        backgroundImage:
+          "radial-gradient(circle at 85% 15%, #004144 0%, transparent 48%)",
+        padding: "80px",
+      }}
+    >
       <div
         style={{
-          height: "100%",
-          width: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          backgroundColor: "#0a0a0a",
-          backgroundImage:
-            "radial-gradient(circle at 85% 15%, #4c1d95 0%, transparent 45%)",
-          padding: "80px",
+          width: "120px",
+          height: "8px",
+          borderRadius: "4px",
+          backgroundColor: "#82cfff",
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          marginTop: "40px",
+          fontSize: "84px",
+          fontWeight: 300,
+          color: "#ffffff",
+          letterSpacing: "-0.03em",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            width: "120px",
-            height: "8px",
-            borderRadius: "4px",
-            backgroundImage: "linear-gradient(90deg, #a855f7, #6366f1)",
-          }}
-        />
-        <div
-          style={{
-            display: "flex",
-            marginTop: "40px",
-            fontSize: "84px",
-            fontWeight: 700,
-            color: "#ffffff",
-            letterSpacing: "-0.03em",
-          }}
-        >
-          {site.name}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: "12px",
-            fontSize: "40px",
-            color: "#c4b5fd",
-          }}
-        >
-          {site.role} · {site.location}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: "32px",
-            maxWidth: "900px",
-            fontSize: "26px",
-            lineHeight: 1.5,
-            color: "#9ca3af",
-          }}
-        >
-          {site.description}
-        </div>
+        {site.name}
       </div>
-    ),
-    size
+      <div
+        style={{
+          display: "flex",
+          marginTop: "12px",
+          fontSize: "40px",
+          color: "#82cfff",
+        }}
+      >
+        {site.role} · {site.location}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          marginTop: "32px",
+          maxWidth: "900px",
+          fontSize: "26px",
+          lineHeight: 1.5,
+          color: "rgba(255,255,255,0.6)",
+        }}
+      >
+        {site.description}
+      </div>
+    </div>,
+    size,
   );
 }

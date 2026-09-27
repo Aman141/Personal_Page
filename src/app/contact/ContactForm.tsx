@@ -5,11 +5,26 @@ import { CheckCircle2, Loader2, Send, TriangleAlert } from "lucide-react";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-const FIELD_CLASSES =
-  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 dark:border-gray-700 dark:bg-gray-950 dark:placeholder:text-gray-600";
-
-const LABEL_CLASSES =
-  "mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300";
+// The form sits on `--surface`, so every colour here is an adaptive ink token
+// and follows the page theme. It was briefly parameterised over a dark variant
+// as well, while the contact layout was being chosen; that path is gone.
+const style = {
+  shell: "rounded-[18px] border border-line-subtle bg-surface-subtle p-7",
+  heading: "text-ink",
+  sub: "text-ink-muted",
+  label: "mono-label mb-2 block text-[11px] tracking-[0.14em] text-ink-faint",
+  field:
+    "w-full rounded-lg border border-line bg-surface px-4 py-3 text-[15px] text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-action disabled:opacity-60",
+  error:
+    "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-300/40 dark:bg-amber-200/10 dark:text-amber-100",
+  errorLink: "text-action underline",
+  submit:
+    "bg-deep text-white hover:bg-teal dark:bg-accent dark:text-deep dark:hover:bg-accent-soft",
+  sentShell: "rounded-[18px] border border-line-subtle bg-surface-subtle p-7",
+  sentBadge: "bg-action text-white dark:bg-accent dark:text-deep",
+  sentBody: "text-ink-muted",
+  sentAgain: "border-action/40 text-action hover:text-ink",
+};
 
 const ERROR_MESSAGES: Record<string, string> = {
   missing_fields: "Please fill in every field.",
@@ -68,20 +83,26 @@ export default function ContactForm({ email }: { email: string }) {
         // aria-live so screen readers announce the outcome, since the form
         // that had focus has just been replaced.
         aria-live="polite"
-        className="flex h-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white p-10 text-center shadow-sm dark:border-gray-700 dark:bg-gray-900"
+        className={`flex flex-col items-start ${style.sentShell}`}
       >
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
-          <CheckCircle2 className="h-6 w-6" />
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-full ${style.sentBadge}`}
+        >
+          <CheckCircle2 className="h-5 w-5" />
         </span>
-        <h2 className="mt-4 text-lg font-semibold">Message sent</h2>
-        <p className="mt-2 max-w-sm text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+        <h2 className={`mt-5 text-lg font-normal ${style.heading}`}>
+          Message sent
+        </h2>
+        <p
+          className={`mt-3 max-w-sm text-[15px] leading-relaxed font-light ${style.sentBody}`}
+        >
           Thanks for reaching out — it landed in my inbox and I&apos;ll reply
           from there.
         </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="mt-6 text-sm font-medium text-purple-600 hover:underline dark:text-purple-400"
+          className={`mono-label mt-6 border-b pb-1 text-[12px] tracking-[0.08em] transition-colors ${style.sentAgain}`}
         >
           Send another
         </button>
@@ -92,18 +113,17 @@ export default function ContactForm({ email }: { email: string }) {
   const sending = status === "sending";
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900"
-    >
-      <h2 className="text-lg font-semibold">Send a message</h2>
-      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+    <form onSubmit={handleSubmit} className={style.shell}>
+      <h2 className={`m-0 text-lg font-normal ${style.heading}`}>
+        Send a message
+      </h2>
+      <p className={`mt-2 text-[15px] font-light ${style.sub}`}>
         Goes straight to my inbox.
       </p>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-7 space-y-4">
         <div>
-          <label htmlFor="name" className={LABEL_CLASSES}>
+          <label htmlFor="name" className={style.label}>
             Name
           </label>
           <input
@@ -114,12 +134,12 @@ export default function ContactForm({ email }: { email: string }) {
             maxLength={100}
             autoComplete="name"
             disabled={sending}
-            className={FIELD_CLASSES}
+            className={style.field}
           />
         </div>
 
         <div>
-          <label htmlFor="email" className={LABEL_CLASSES}>
+          <label htmlFor="email" className={style.label}>
             Email
           </label>
           <input
@@ -130,13 +150,13 @@ export default function ContactForm({ email }: { email: string }) {
             maxLength={200}
             autoComplete="email"
             disabled={sending}
-            className={FIELD_CLASSES}
+            className={style.field}
             placeholder="so I can reply"
           />
         </div>
 
         <div>
-          <label htmlFor="message" className={LABEL_CLASSES}>
+          <label htmlFor="message" className={style.label}>
             Message
           </label>
           <textarea
@@ -146,7 +166,7 @@ export default function ContactForm({ email }: { email: string }) {
             rows={6}
             maxLength={5000}
             disabled={sending}
-            className={`${FIELD_CLASSES} resize-y`}
+            className={`${style.field} resize-y`}
           />
         </div>
 
@@ -162,12 +182,12 @@ export default function ContactForm({ email }: { email: string }) {
       {error && (
         <p
           role="alert"
-          className="mt-4 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300"
+          className={`mt-5 flex items-start gap-2.5 rounded-lg border p-3.5 text-sm font-light ${style.error}`}
         >
           <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
             {error}{" "}
-            <a href={`mailto:${email}`} className="font-medium underline">
+            <a href={`mailto:${email}`} className={style.errorLink}>
               {email}
             </a>
           </span>
@@ -177,7 +197,7 @@ export default function ContactForm({ email }: { email: string }) {
       <button
         type="submit"
         disabled={sending}
-        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className={`mt-7 inline-flex w-full items-center justify-center gap-2 rounded-lg px-5 py-3.5 text-[15px] transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${style.submit}`}
       >
         {sending ? (
           <>
